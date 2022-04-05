@@ -1,0 +1,9 @@
+- Vague/ non descript way of impending time
+- Player list
+- Next Button
+- Text field for the current word
+- Dropdown for category 
+
+
+
+
