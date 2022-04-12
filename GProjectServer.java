@@ -23,8 +23,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    private TextField tfServer = new TextField();
    private TextArea taLog = new TextArea();
    
-   //Variables
-   private Vector<String> playerList = new Vector<String>();
+   //Sending Variables
+   Variables pack = new Variables();
    
    
    
@@ -101,6 +101,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       Socket socket2 = null;
       Scanner scn = null;
       PrintWriter pw = null;
+      ObjectOutputStream varSend = null; 
 
       
       /** constructor */
@@ -113,6 +114,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          try {
             scn = new Scanner(socket2.getInputStream());
             pw = new PrintWriter(socket2.getOutputStream());
+            varSend = new ObjectOutputStream(socket2.getOutputStream());
             taLog.appendText("Request received from " + socket2.getInetAddress().getHostName()+"\n");
             while(scn.hasNextLine()) {
                String command = scn.nextLine();
@@ -120,17 +122,19 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                   case "JOIN":
                      String name = scn.nextLine();
                      taLog.appendText("Player "+name+" has Joined\n");
-                     playerList.add(name);
-                     pw.println("UPDATE-PLAYER-LIST");
-                     pw.flush();
-                     for(int i=0;i<playerList.size();i++){
-                        pw.println(playerList.get(i)+"\n");
-                        pw.flush();
-                        
+                     pack.playerlistAdd(name);
+                     varSend.writeObject(pack);
                      
-                     }
                      
+                     
+                     
+                     varSend.close();   
                      break;
+                     
+                   case "DISCONNECT":
+                     //use Variables method to remove name from player list
+                     socket2.close()
+                     break;  
                   default:
                      pw.println("ERROR-Unrecognized command: " + command);
                      pw.flush();

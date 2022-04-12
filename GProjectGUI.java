@@ -22,7 +22,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private Socket socket = null;
    private PrintWriter pw = null;
    private Scanner scn = null;
-   
+   private ObjectInputStream varRecieve= null;
+   private Variables pack = null;
    
    //Start Menu Initiations
    private Scene sceneStart;
@@ -152,7 +153,9 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
              break;
           case "Leave":
             stage.setScene(sceneStart);
-            //socket.close();
+            socket.close();
+            pw.println("DISCONNECT");
+            
             break;
           case "Grab Host":
              btnStart.setDisable(false);
@@ -225,24 +228,20 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
              String name = (String)tidName.getResult();
              try{socket = new Socket(ip, 45549);
                 scn = new Scanner(socket.getInputStream());
-                pw = new PrintWriter(socket.getOutputStream());  
+                pw = new PrintWriter(socket.getOutputStream());
+                varRecieve = new ObjectInputStream(socket.getInputStream());  
                 pw.println("JOIN");
                 pw.println(name);
                 pw.flush();
+                pack = (Variables)varRecieve.readObject();
+                String temp = pack.playerlistGet();
+                System.out.println(temp);
+                // Turn a string with the format of player1.player2.player3. into the player list
                 
                 
+
                 
-                
-                
-                
-                
-                
-                
-                //Problem Area while loop creates hanging
-                
-                while(true){
-                System.out.print(scn.nextLine());
-                }
+
                 
                 
                 
@@ -257,6 +256,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
   
    
    }
+   
+
    
    
    
