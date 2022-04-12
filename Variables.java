@@ -24,14 +24,8 @@ public class Variables implements Serializable{
       
    }
    
-   public String playerlistGet(){
-      String res = "";
-      for(int i = 0;i<playerList.size();i++){
-         res = res+playerList.get(i)+".";
-      
-      
-      }
-         return res;
+   public Vector<String> playerlistGet(){
+         return playerList;
          
    }
    

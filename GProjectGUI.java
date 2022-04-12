@@ -24,6 +24,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private Scanner scn = null;
    private ObjectInputStream varRecieve= null;
    private Variables pack = null;
+   private Vector<String> localList = null;
    
    //Start Menu Initiations
    private Scene sceneStart;
@@ -54,6 +55,10 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private Button btnSend = new Button("Send");
    
    private TextArea taList = new TextArea();
+   private Label lblT1Points = new Label("Team 1: ");
+   private Label lblT2Points = new Label("Team 2: ");
+   private TextField tfT1Points = new TextField();
+   private TextField tfT2Points = new TextField();
    private Button btnLeave = new Button("Leave");
    private Button btnGrab = new Button("Grab Host");
    private Button btnStart = new Button("Start Game");
@@ -153,7 +158,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
              break;
           case "Leave":
             stage.setScene(sceneStart);
-            socket.close();
+            try{socket.close();}catch(Exception e){System.out.println("Error Disconnecting: "+ e.getMessage());}
             pw.println("DISCONNECT");
             
             break;
@@ -177,44 +182,6 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       }
       
       
-      //Recieving
-           
-             /*while(scn.hasNextLine()) {
-               String command = scn.nextLine();
-                switch(command) {
-                  case "UPDATE-PLAYER-LIST":
-                     while(scn.hasNextLine()) {
-                        taList.appendText(scn.nextLine()+"\n");
-                     }
-                     break;
-                  default:
-                     pw.println("ERROR-Unrecognized command: " + command);
-                     pw.flush();
-                     break;
-               }  // switch 
-            }*/
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
    }
    
 
@@ -234,9 +201,14 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                 pw.println(name);
                 pw.flush();
                 pack = (Variables)varRecieve.readObject();
-                String temp = pack.playerlistGet();
-                System.out.println(temp);
-                // Turn a string with the format of player1.player2.player3. into the player list
+                localList = pack.playerlistGet();
+                for(int i = 0;i<localList.size();i++){
+                  taList.appendText(localList.get(i)+"\n");
+                
+                
+                
+                }
+                
                 
                 
 
