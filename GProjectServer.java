@@ -23,6 +23,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    private TextField tfServer = new TextField();
    private TextArea taLog = new TextArea();
    
+   Vector<ObjectOutputStream> clients = new Vector<ObjectOutputStream>();
+   
    //Sending Variables
    Variables pack = new Variables();
    
@@ -46,7 +48,9 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       // Window setup
       stage = _stage;
       stage.setTitle("Pass the Bomb SERVER");
-      stage.setOnCloseRequest(new EventHandler<WindowEvent>() {public void handle(WindowEvent evt) {System.exit(0);}});
+      stage.setOnCloseRequest(
+         new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent evt) {System.exit(0);}});
       stage.setResizable(false);
       scene=new Scene(root, 500, 500); 
       stage.setScene(scene);                 
@@ -57,33 +61,31 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       taLog.setEditable(false);
       taLog.setPrefHeight(450);
       
-      try{tfServer.appendText(InetAddress.getLocalHost().getHostAddress().trim());}catch(Exception e){taLog.appendText("Error Getting Local IP: "+e.getMessage()+"\n");}
+      try{tfServer.appendText(InetAddress.getLocalHost().getHostAddress().trim());}
+      catch(Exception e){taLog.appendText("Error Getting Local IP: "+e.getMessage()+"\n");}
       
       
       
-      Thread t1 = new Thread() {
-         public void run() {
-            doServerStuff();
-         }
-      };
+      Thread t1 = 
+         new Thread() {
+            public void run() {
+               doServerStuff();
+            }
+         };
       t1.start();
             
-         }
+   }
       
-      
-      
-      
-      
-      
-   
-      public void handle(ActionEvent evt) {}
-     private void doServerStuff() {
+
+   public void handle(ActionEvent evt) {}
+   private void doServerStuff() {
       try {
          ServerSocket sSocket = new ServerSocket(45549);
          while(true) {
             Socket socket1 = sSocket.accept();
             Thread t2 = new ClientThread(socket1);
             t2.start();
+            
          }
       }
       catch(Exception e) {
@@ -97,12 +99,12 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    
    
    
-  class ClientThread extends Thread {
+   class ClientThread extends Thread {
       Socket socket2 = null;
       Scanner scn = null;
       PrintWriter pw = null;
       ObjectOutputStream varSend = null; 
-
+   
       
       /** constructor */
       public ClientThread(Socket _cSocket) {
@@ -112,29 +114,38 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       /** Thread main */
       public void run() {
          try {
-            scn = new Scanner(socket2.getInputStream());
-            pw = new PrintWriter(socket2.getOutputStream());
+            // scn = new Scanner(socket2.getInputStream());
+//             pw = new PrintWriter(socket2.getOutputStream());
+            ObjectInputStream ois = new ObjectInputStream(socket2.getInputStream());
             varSend = new ObjectOutputStream(socket2.getOutputStream());
             taLog.appendText("Request received from " + socket2.getInetAddress().getHostName()+"\n");
-            while(scn.hasNextLine()) {
-               String command = scn.nextLine();
-                switch(command) {
+
+            while(ois.readUTF() != null) {
+               // String command = scn.nextLine();
+               String command = ois.readUTF();
+               switch(command) {
                   case "JOIN":
-                     String name = scn.nextLine();
+                     String name = (String) ois.readUTF();
                      taLog.appendText("Player "+name+" has Joined\n");
                      pack.playerlistAdd(name);
                      varSend.writeObject(pack);
-                     
-                     
-                     
-                     
-                     varSend.close();   
+                  
+                    //  varSend.close();   
                      break;
                      
-                   case "DISCONNECT":
+                  case "DISCONNECT":
                      //use Variables method to remove name from player list
-                     socket2.close()
+                     socket2.close();
                      break;  
+                     
+                  case "SEND":
+                     taLog.appendText("Hello World");
+                     break;  
+                     
+                  case "START":
+                     taLog.appendText("It Worked!");
+                     break;
+                  
                   default:
                      pw.println("ERROR-Unrecognized command: " + command);
                      pw.flush();
@@ -150,8 +161,41 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          }
       }  // run
       
-           
-    }
+      // public void doStart(){
+//       
+//          ta
+//       
+//       }
+      
+      
+    //    public void sendText(){
+   // 
+   //             String input = scn.nextLine();
+   //             pw.println(input);
+   //             pw.flush();
+   // 
+   //    }
+   
+      // private void broadcastMessage(String msg) {
+//          for(PrintWriter pw : clients) {
+//          
+//             try {
+//                pw.println(msg);
+//                pw.flush();
+//             } catch(Exception ex)
+//             {
+//                ex.printStackTrace();
+//             }
+//          }
+//       
+//       
+//            
+//       }
+   
+   }
+      
+     
+  
    
    
    

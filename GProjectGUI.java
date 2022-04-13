@@ -6,9 +6,11 @@ import javafx.scene.layout.*;
 import javafx.stage.*;
 import javafx.geometry.*;
 import javafx.scene.image.*;
+import java.lang.Object.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import javafx.application.Platform.*;
 
 /**
  * GUIStarter - class to help with JavaFX classes
@@ -22,7 +24,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private Socket socket = null;
    private PrintWriter pw = null;
    private Scanner scn = null;
-   private ObjectInputStream varRecieve= null;
+   private ObjectInputStream varRecieve = null;
+   private ObjectOutputStream oos = null;
    private Variables pack = null;
    private Vector<String> localList = null;
    
@@ -65,17 +68,6 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private ComboBox cbCategory = new ComboBox();
    private Button btnRelinquish = new Button("Relinquish Host");
    private Label lblHost = new Label("Host Controls:");
-   
-
-   
-   
-   
-   
-   
-   
-   
-   
-   
    
    // Main just instantiates an instance of this GUI class
    public static void main(String[] args) {
@@ -133,52 +125,59 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       btnGrab.setOnAction(this);
       btnStart.setOnAction(this);
       btnRelinquish.setOnAction(this);
-      
-
-
-      
-      
-      
-      
+   
    }
    
    public void handle(ActionEvent evt) {
       // Get the button that was clicked
       Button btn = (Button)evt.getSource();
+      try{
+         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+      }catch(Exception e){
+         e.getMessage();
+      }
       
       // Switch on its name
       switch(btn.getText()) {
-          case "Join":
-              doConnect();
-             stage.setScene(sceneGame);
-             break;
-          case "How to Play":
+         case "Join":
+            doConnect();
+            stage.setScene(sceneGame);
+            break;
+         case "How to Play":
              //stage.setScene(sceneHTP);
-             System.out.println("How To Play screen starts");  
-             break;
-          case "Leave":
-            stage.setScene(sceneStart);
-            try{socket.close();}catch(Exception e){System.out.println("Error Disconnecting: "+ e.getMessage());}
-            pw.println("DISCONNECT");
+            System.out.println("How To Play screen starts");  
+            break;
+            
+         case "Leave":
+            doLeave();
             
             break;
-          case "Grab Host":
-             btnStart.setDisable(false);
-             btnRelinquish.setDisable(false);
-             cbCategory.setDisable(false);
-             btnGrab.setDisable(true); 
-             break;   
-          case "Relinquish Host":
-             btnStart.setDisable(true);
-             btnRelinquish.setDisable(true);
-             cbCategory.setDisable(true);
-             cbCategory.setValue("");
-             btnGrab.setDisable(false); 
-             break;               
-          case "Start":
-            //Theoretically would start another method maybe in another class or sumthin
+         case "Grab Host":
+            btnStart.setDisable(false);
+            btnRelinquish.setDisable(false);
+            cbCategory.setDisable(false);
+            btnGrab.setDisable(true); 
+            break;   
+            
+         case "Relinquish Host":
+            btnStart.setDisable(true);
+            btnRelinquish.setDisable(true);
+            cbCategory.setDisable(true);
+            cbCategory.setValue("");
+            btnGrab.setDisable(false); 
+            break;                
+            
+         case "Send":
+            doSend();
             break;
-     
+          
+                     
+         case "Start Game":
+            //Theoretically would start another method maybe in another class or sumthin
+            doStart();
+            
+            break;
+      
       }
       
       
@@ -189,53 +188,134 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
 //Sending   
    public void doConnect(){
-             tidIP.showAndWait();
-             tidName.showAndWait();
-             String ip = (String)tidIP.getResult();
-             String name = (String)tidName.getResult();
-             try{socket = new Socket(ip, 45549);
-                scn = new Scanner(socket.getInputStream());
-                pw = new PrintWriter(socket.getOutputStream());
-                varRecieve = new ObjectInputStream(socket.getInputStream());  
-                pw.println("JOIN");
-                pw.println(name);
-                pw.flush();
-                pack = (Variables)varRecieve.readObject();
-                localList = pack.playerlistGet();
-                for(int i = 0;i<localList.size();i++){
-                  taList.appendText(localList.get(i)+"\n");
-                
-                
-                
-                }
-                
-                
-                
+   
+      tidIP.showAndWait();
+      tidName.showAndWait();
+      String ip = (String)tidIP.getResult();
+      String name = (String)tidName.getResult();
+      try{
+         socket = new Socket(ip, 45549);
+         // scn = new Scanner(socket.getInputStream());
+         // pw = new PrintWriter(socket.getOutputStream());
+         oos = new ObjectOutputStream(socket.getOutputStream());
+         varRecieve = new ObjectInputStream(socket.getInputStream());  
+         oos.writeUTF("JOIN");
+         oos.writeUTF(name);
+         oos.flush();
+         
+         pack = (Variables)varRecieve.readObject();
+         localList = pack.playerlistGet();
+         
+         for(int i = 0;i<localList.size();i++){
+            taList.appendText(localList.get(i)+"\n");
+         
+         }
+      
+      }catch(Exception e){
+         System.out.println("Problem joining: "+ e.getMessage());
+         taChat.setText("Error Joining: Leave this Lobby and try rejoining with correct ip");
+      }
+           
+   }
+   
+   public void doSend() {
+   
+      String input = tfChatInput.getText();
+      
+      try{
+      
+         oos.writeUTF("SEND");
+         oos.writeUTF();
+         
+         oos.flush();
 
-                
-
-                
-                
-                
-                
-                
-                
-                
-       
-                   
-             }catch(Exception e){System.out.println("Problem joining: "+ e.getMessage());taChat.setText("Error Joining: Leave this Lobby and try rejoining with correct ip");}
-             
-  
+      }catch(Exception e){
+         e.getMessage();
+      
+      }
+      
+         
+      // pw.println(input);
+//       pw.flush();
+//    
+//       String inputs = scn.nextLine();
+//       taChat.appendText(inputs);
+//       tfChatInput.setText("");
+         
+   
+   
    
    }
    
+   public void doLeave(){
+      stage.setScene(sceneStart);   
+        
+      try{      
+         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+         socket.close();
+         oos.writeObject("DISCONNECT");
+         
+      }catch(Exception e){
+      
+         System.out.println("Error Disconnecting: "+ e.getMessage());
+         
+      }
+   
+   }
+   //doStart Method:
+   //1) Needs to send a call to the Server so the server can call a method to start the game and send that to all clients.
+   //2) Needs to take in the array that the host selects and send to the Server. Based on that Array, a random word will be selected.
+   public void doStart(){
+      
+      try{
+      
+         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+         String start = "START";
+         oos.writeObject(start);
+         oos.flush();
+      
+      
+      }catch(Exception e){
+         e.getMessage();
+      
+      
+      }
+   
+      
+      
+   
+   
+   }
+    // class ReceiveMsgThread extends Thread {
+// 
+//       public void run() {
+//          String message = "";
+//          try {
+//             while((message = scn.nextLine()) != null) {
+//                final String msg = message;
+//                Platform.runLater(new Runnable() {
+//                   public void run() {
+//                      taChat.appendText(msg);
+//                   }
+//                });
+//             }
+//          } catch(Exception ex) {
+//             ex.printStackTrace();
+//          }
+//       }
+//    }  
+   
+   
+}
+   
+    
+   
 
    
    
-   
-   
+
+
    
    
    
       
-}	
