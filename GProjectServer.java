@@ -11,13 +11,14 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-public class GProjectServer extends Application implements EventHandler<ActionEvent>{
+public class GProjectServersolution extends Application implements EventHandler<ActionEvent>{
    // Window attributes
    private Stage stage;
    private Scene scene;
    private VBox root = new VBox();
    private FlowPane fp1 = new FlowPane();
-
+   private Object lock = new Object();
+   
    // GUI Components
    private Label lblServer = new Label("Server IP:");
    private TextField tfServer = new TextField();
@@ -27,16 +28,10 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    
    //Sending Variables
    Variables pack = new Variables();
-   
-   
-   
-   
-   
-   
-   
+   Variables packMsg = new Variables();
+
    public static void main(String[] args) {
       launch(args);
-       
    }
    
    /**
@@ -63,9 +58,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       
       try{tfServer.appendText(InetAddress.getLocalHost().getHostAddress().trim());}
       catch(Exception e){taLog.appendText("Error Getting Local IP: "+e.getMessage()+"\n");}
-      
-      
-      
+   
       Thread t1 = 
          new Thread() {
             public void run() {
@@ -78,6 +71,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       
 
    public void handle(ActionEvent evt) {}
+   
+   
    private void doServerStuff() {
       try {
          ServerSocket sSocket = new ServerSocket(45549);
@@ -85,25 +80,36 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             Socket socket1 = sSocket.accept();
             Thread t2 = new ClientThread(socket1);
             t2.start();
-            
          }
       }
       catch(Exception e) {
       }
    }
-   
-   
-   
-   
-   
-   
-   
-   
+
+   private void broadcastMessage(String command, Object data) {
+      System.out.println("sending broadcast message : " + clients.size());  
+      for(ObjectOutputStream clientOutStream : clients) {
+         System.out.println("sending broadcast message ==");
+         try {
+            clientOutStream.writeUTF(command);
+            clientOutStream.flush();
+            Variables v = (Variables)data;
+            System.out.println("Sending player data " + v.toString());
+            clientOutStream.writeObject(data);
+            clientOutStream.reset();
+            clientOutStream.flush();
+         } catch(Exception ex)
+         {
+            ex.printStackTrace();
+         }
+      }
+   }
+            
    class ClientThread extends Thread {
       Socket socket2 = null;
       Scanner scn = null;
-      PrintWriter pw = null;
-      ObjectOutputStream varSend = null; 
+      ObjectInputStream ooi = null;
+      ObjectOutputStream oos = null; 
    
       
       /** constructor */
@@ -114,23 +120,24 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       /** Thread main */
       public void run() {
          try {
-            // scn = new Scanner(socket2.getInputStream());
-//             pw = new PrintWriter(socket2.getOutputStream());
-            ObjectInputStream ois = new ObjectInputStream(socket2.getInputStream());
-            varSend = new ObjectOutputStream(socket2.getOutputStream());
+            ooi = new ObjectInputStream(socket2.getInputStream());
+            oos = new ObjectOutputStream(socket2.getOutputStream());
+            clients.add(oos);
             taLog.appendText("Request received from " + socket2.getInetAddress().getHostName()+"\n");
-
-            while(ois.readUTF() != null) {
+         
+            while(true) {
                // String command = scn.nextLine();
-               String command = ois.readUTF();
+               String command = ooi.readUTF();
                switch(command) {
                   case "JOIN":
-                     String name = (String) ois.readUTF();
+                     String name = ooi.readUTF();
                      taLog.appendText("Player "+name+" has Joined\n");
                      pack.playerlistAdd(name);
-                     varSend.writeObject(pack);
-                  
-                    //  varSend.close();   
+                     
+                     //broadcase to all connected user
+
+                     broadcastMessage("REFRESHLIST",pack);
+
                      break;
                      
                   case "DISCONNECT":
@@ -139,7 +146,11 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      break;  
                      
                   case "SEND":
-                     taLog.appendText("Hello World");
+                     String name2 = ooi.readUTF();
+                     packMsg.playerlistAdd(name2);
+                     //broadcase to all connected user
+                     broadcastMessage("REFRESHMSG",packMsg);
+                     
                      break;  
                      
                   case "START":
@@ -147,62 +158,49 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      break;
                   
                   default:
-                     pw.println("ERROR-Unrecognized command: " + command);
-                     pw.flush();
+//                      pw.println("ERROR-Unrecognized command: " + command);
+//                      pw.flush();
                      break;
                }  // switch 
             }  //while
             
-            pw.close();
-            scn.close();
-            socket2.close();
+            // pw.close();
+            // scn.close();
+            //socket2.close();
          }  // try
          catch(Exception e) {
          }
       }  // run
-      
-      // public void doStart(){
-//       
-//          ta
-//       
-//       }
-      
-      
-    //    public void sendText(){
-   // 
-   //             String input = scn.nextLine();
-   //             pw.println(input);
-   //             pw.flush();
-   // 
-   //    }
-   
-      // private void broadcastMessage(String msg) {
-//          for(PrintWriter pw : clients) {
-//          
-//             try {
-//                pw.println(msg);
-//                pw.flush();
-//             } catch(Exception ex)
-//             {
-//                ex.printStackTrace();
-//             }
-//          }
-//       
-//       
-//            
-//       }
-   
    }
+ 
+}
+
       
-     
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+       
   
    
    
    
-   
-   
-      
-}
+
 
       
       

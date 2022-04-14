@@ -10,7 +10,7 @@ import java.lang.Object.*;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import javafx.application.Platform.*;
+import javafx.application.Platform;
 
 /**
  * GUIStarter - class to help with JavaFX classes
@@ -18,16 +18,17 @@ import javafx.application.Platform.*;
  * @version 2205
  */
 
-public class GProjectGUI extends Application implements EventHandler<ActionEvent> {
+public class GProjectGUIsolution extends Application implements EventHandler<ActionEvent> {
    //General Declarations
    private Stage stage;       
    private Socket socket = null;
    private PrintWriter pw = null;
    private Scanner scn = null;
-   private ObjectInputStream varRecieve = null;
+   private ObjectInputStream ooi = null;
    private ObjectOutputStream oos = null;
-   private Variables pack = null;
+   //private Variables pack = new Variables();
    private Vector<String> localList = null;
+   private Vector<String> localMsg = null;
    
    //Start Menu Initiations
    private Scene sceneStart;
@@ -132,7 +133,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       // Get the button that was clicked
       Button btn = (Button)evt.getSource();
       try{
-         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+         //ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
       }catch(Exception e){
          e.getMessage();
       }
@@ -149,7 +150,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
             break;
             
          case "Leave":
-            doLeave();
+            //doLeave();
             
             break;
          case "Grab Host":
@@ -174,18 +175,12 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      
          case "Start Game":
             //Theoretically would start another method maybe in another class or sumthin
-            doStart();
+            //doStart();
             
             break;
-      
       }
-      
-      
    }
-   
 
-   
-   
 //Sending   
    public void doConnect(){
    
@@ -193,119 +188,106 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       tidName.showAndWait();
       String ip = (String)tidIP.getResult();
       String name = (String)tidName.getResult();
+      
       try{
          socket = new Socket(ip, 45549);
-         // scn = new Scanner(socket.getInputStream());
-         // pw = new PrintWriter(socket.getOutputStream());
          oos = new ObjectOutputStream(socket.getOutputStream());
-         varRecieve = new ObjectInputStream(socket.getInputStream());  
+         ooi = new ObjectInputStream(socket.getInputStream()); 
+          
+         //Start the thread
+         new ReceiveMsgThread().start();
+         
+         //Semd the command to join
          oos.writeUTF("JOIN");
+         oos.flush();
          oos.writeUTF(name);
          oos.flush();
          
-         pack = (Variables)varRecieve.readObject();
-         localList = pack.playerlistGet();
-         
-         for(int i = 0;i<localList.size();i++){
-            taList.appendText(localList.get(i)+"\n");
-         
-         }
-      
       }catch(Exception e){
          System.out.println("Problem joining: "+ e.getMessage());
          taChat.setText("Error Joining: Leave this Lobby and try rejoining with correct ip");
       }
            
    }
-   
-   public void doSend() {
-   
-      String input = tfChatInput.getText();
-      
-      try{
-      
-         oos.writeUTF("SEND");
-         oos.writeUTF();
-         
-         oos.flush();
 
-      }catch(Exception e){
-         e.getMessage();
-      
-      }
-      
-         
-      // pw.println(input);
-//       pw.flush();
-//    
-//       String inputs = scn.nextLine();
-//       taChat.appendText(inputs);
-//       tfChatInput.setText("");
-         
-   
-   
-   
-   }
-   
-   public void doLeave(){
-      stage.setScene(sceneStart);   
-        
-      try{      
-         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-         socket.close();
-         oos.writeObject("DISCONNECT");
-         
-      }catch(Exception e){
-      
-         System.out.println("Error Disconnecting: "+ e.getMessage());
-         
-      }
-   
-   }
-   //doStart Method:
-   //1) Needs to send a call to the Server so the server can call a method to start the game and send that to all clients.
-   //2) Needs to take in the array that the host selects and send to the Server. Based on that Array, a random word will be selected.
-   public void doStart(){
-      
-      try{
-      
-         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-         String start = "START";
-         oos.writeObject(start);
+   private void doSend() {
+      try {
+         String chat = tfChatInput.getText();
+         oos.writeUTF("SEND");
          oos.flush();
-      
-      
-      }catch(Exception e){
-         e.getMessage();
-      
-      
-      }
-   
-      
-      
-   
-   
+         oos.writeUTF(chat);
+         oos.flush();
+        } catch (Exception ex) {
+         ex.printStackTrace();
+        }
    }
-    // class ReceiveMsgThread extends Thread {
-// 
-//       public void run() {
-//          String message = "";
-//          try {
-//             while((message = scn.nextLine()) != null) {
-//                final String msg = message;
-//                Platform.runLater(new Runnable() {
-//                   public void run() {
-//                      taChat.appendText(msg);
-//                   }
-//                });
-//             }
-//          } catch(Exception ex) {
-//             ex.printStackTrace();
-//          }
-//       }
-//    }  
+   
+   private void refreshMsg(Variables var) {
+      //Loop through the variables to update the list
+         Vector<String> playerList = var.playerlistGet();
+         localList = playerList;
+         taChat.setText("");
+         for(int i = 0;i< playerList.size();i++){
+            System.out.println("Adding ==> " + playerList.get(i));
+            taChat.appendText(playerList.get(i)+"\n");
+         }
+   }
+   private void refreshList(Variables var) {
+      //Loop through the variables to update the list
+         Vector<String> playerList = var.playerlistGet();
+         localList = playerList;
+         taList.setText("");
+         for(int i = 0;i< playerList.size();i++){
+            System.out.println("Adding ==> " + playerList.get(i));
+            taList.appendText(playerList.get(i)+"\n");
+         }
+   }
    
    
+   class ReceiveMsgThread extends Thread {
+      public void run() {
+         System.out.println("Client Thread Running");
+         
+         String message = "";
+         try {
+            //Loop to keep listening
+            while(true) {
+                  String command = ooi.readUTF();
+                  //it is a command
+                  System.out.println("Command received : " + command);
+                  switch(command) {
+                     case "REFRESHLIST":
+                        //command to refresh the list
+                        //Server is sending var object. readit.
+                        System.out.println("Processing command: " + command);
+                        Variables var = (Variables)ooi.readObject();
+                        System.out.println("received data of size " + var.playerlistGet().size());
+                        refreshList(var);
+//                         Platform.runLater(
+//                            new Runnable() {
+//                               public void run() {
+//                                  refreshList(var);
+//                               }
+//                            });
+                         break;
+                      
+                      case "REFRESHMSG":                    
+                        System.out.println("Processing command: " + command);
+                        Variables var2 = (Variables)ooi.readObject();
+                        System.out.println("received data of size " + var2.playerlistGet().size());
+                        refreshMsg(var2);
+
+                          break;
+                      
+                      default:
+                        System.out.println("Invalid command: " + command);
+                  }
+            }
+         } catch(Exception ex) {
+            ex.printStackTrace();
+         }
+      }
+   }  
 }
    
     
@@ -313,9 +295,3 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
 
    
    
-
-
-   
-   
-   
-      
