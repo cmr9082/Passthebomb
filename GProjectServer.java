@@ -11,7 +11,7 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-public class GProjectServersolution extends Application implements EventHandler<ActionEvent>{
+public class GProjectServer extends Application implements EventHandler<ActionEvent>{
    // Window attributes
    private Stage stage;
    private Scene scene;
@@ -29,6 +29,7 @@ public class GProjectServersolution extends Application implements EventHandler<
    //Sending Variables
    Variables pack = new Variables();
    Variables packMsg = new Variables();
+   String name = "";
 
    public static void main(String[] args) {
       launch(args);
@@ -130,7 +131,7 @@ public class GProjectServersolution extends Application implements EventHandler<
                String command = ooi.readUTF();
                switch(command) {
                   case "JOIN":
-                     String name = ooi.readUTF();
+                     name = ooi.readUTF();
                      taLog.appendText("Player "+name+" has Joined\n");
                      pack.playerlistAdd(name);
                      
@@ -141,8 +142,9 @@ public class GProjectServersolution extends Application implements EventHandler<
                      break;
                      
                   case "DISCONNECT":
-                     //use Variables method to remove name from player list
+                     pack.playerlistRemove(name);
                      socket2.close();
+                     broadcastMessage("REFRESHLIST",pack);
                      break;  
                      
                   case "SEND":

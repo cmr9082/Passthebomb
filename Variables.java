@@ -20,8 +20,7 @@ public class Variables implements Serializable{
    }
    
    public void playerlistRemove(String _string){
-      
-      
+      playerList.remove(playerList.indexOf(_string));
    }
    
    public Vector<String> playerlistGet(){

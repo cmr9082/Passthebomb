@@ -18,7 +18,7 @@ import javafx.application.Platform;
  * @version 2205
  */
 
-public class GProjectGUIsolution extends Application implements EventHandler<ActionEvent> {
+public class GProjectGUI extends Application implements EventHandler<ActionEvent> {
    //General Declarations
    private Stage stage;       
    private Socket socket = null;
@@ -150,7 +150,7 @@ public class GProjectGUIsolution extends Application implements EventHandler<Act
             break;
             
          case "Leave":
-            //doLeave();
+            doLeave();
             
             break;
          case "Grab Host":
@@ -217,9 +217,18 @@ public class GProjectGUIsolution extends Application implements EventHandler<Act
          oos.flush();
          oos.writeUTF(chat);
          oos.flush();
+         tfChatInput.setText("");
         } catch (Exception ex) {
          ex.printStackTrace();
         }
+   }
+   
+   private void doLeave(){
+    try{
+      oos.writeUTF("DISCONNECT");     
+      socket.close();
+      stage.setScene(sceneStart);
+     }catch(Exception e){System.out.println(e.getMessage());}
    }
    
    private void refreshMsg(Variables var) {
