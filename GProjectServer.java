@@ -135,14 +135,16 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      taLog.appendText("Player "+name+" has Joined\n");
                      pack.playerlistAdd(name);
                      
-                     //broadcase to all connected user
+                     
 
                      broadcastMessage("REFRESHLIST",pack);
 
                      break;
                      
                   case "DISCONNECT":
+                     taLog.appendText("Player "+name+" has left");
                      pack.playerlistRemove(name);
+                    
                      socket2.close();
                      broadcastMessage("REFRESHLIST",pack);
                      break;  
@@ -160,8 +162,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      break;
                   
                   default:
-//                      pw.println("ERROR-Unrecognized command: " + command);
-//                      pw.flush();
+                      taLog.appendText("ERROR: Unrecognized Command Recieved");
                      break;
                }  // switch 
             }  //while

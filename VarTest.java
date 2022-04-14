@@ -8,8 +8,10 @@ public class VarTest{
       pack.playerlistAdd("Neb2");
       pack.playerlistAdd("Caleb");
       pack.playerlistAdd("Erich");
-      System.out.println(pack.playerlistGet());
       
+      System.out.println(pack.playerlistGet());
+      pack.playerlistRemove("Neb");
+      System.out.println(pack.playerlistGet());
    
    }
 

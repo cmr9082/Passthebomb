@@ -225,7 +225,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
    private void doLeave(){
     try{
-      oos.writeUTF("DISCONNECT");     
+      oos.writeUTF("DISCONNECT");
+      oos.flush();     
       socket.close();
       stage.setScene(sceneStart);
      }catch(Exception e){System.out.println(e.getMessage());}
