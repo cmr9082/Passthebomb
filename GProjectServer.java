@@ -158,7 +158,14 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      break;  
                      
                   case "START":
-                     taLog.appendText("It Worked!");
+                     taLog.appendText("The Game Would Start Right about now");
+                     break;
+                     
+                  case "HOST-GRAB":
+                     
+                     break;
+                  case "HOST-RELINQUISH":
+                     
                      break;
                   
                   default:

@@ -154,18 +154,17 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
             
             break;
          case "Grab Host":
-            btnStart.setDisable(false);
-            btnRelinquish.setDisable(false);
-            cbCategory.setDisable(false);
-            btnGrab.setDisable(true); 
+            try{
+            oos.writeUTF("HOST-GRAB");
+            oos.flush();
+            }catch(Exception e){System.out.println(e.getMessage());}
             break;   
             
          case "Relinquish Host":
-            btnStart.setDisable(true);
-            btnRelinquish.setDisable(true);
-            cbCategory.setDisable(true);
-            cbCategory.setValue("");
-            btnGrab.setDisable(false); 
+            try{
+            oos.writeUTF("HOST-RELIQUISH");
+            oos.flush();
+            }catch(Exception e){System.out.println(e.getMessage());}
             break;                
             
          case "Send":
@@ -288,7 +287,15 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                         refreshMsg(var2);
 
                           break;
+                      case "NO-HOST":
+                        btnGrab.setDisable(true);
+                        btnStart.setDisable(true);
+                        btnRelinquish.setDisable(true);
+                        cbCategory.setDisable(true);
+                        break;
+                      case "HOST-RECIEVE":
                       
+                        break;
                       default:
                         System.out.println("Invalid command: " + command);
                   }
