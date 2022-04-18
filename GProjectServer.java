@@ -25,6 +25,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    private TextArea taLog = new TextArea();
    private Button btnStart = new Button("Start Game");
    private ComboBox cbCategory = new ComboBox();
+   private RadioButton btnAuto = new RadioButton("Auto Start");
    
    Vector<ObjectOutputStream> clients = new Vector<ObjectOutputStream>();
    
@@ -50,10 +51,10 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          new EventHandler<WindowEvent>() {
             public void handle(WindowEvent evt) {System.exit(0);}});
       stage.setResizable(false);
-      scene=new Scene(root, 500, 500); 
+      scene=new Scene(root, 550, 500); 
       stage.setScene(scene);                 
       stage.show();
-      fp1.getChildren().addAll(lblServer,tfServer, btnStart, cbCategory);
+      fp1.getChildren().addAll(lblServer,tfServer, btnStart, cbCategory,btnAuto);
       root.getChildren().addAll(fp1,taLog);
       cbCategory.getItems().addAll("Everyday Objects","Phrases","Activities","Brands","Video Games","Movies","Foods");
       tfServer.setEditable(false);
@@ -161,16 +162,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      break;  
                      
                   case "START":
-                     taLog.appendText("The Game Would Start Right about now");
+                     gameStart();
                      break;
-                     
-                  case "HOST-GRAB":
-                     
-                     break;
-                  case "HOST-RELINQUISH":
-                     
-                     break;
-                  
                   default:
                       taLog.appendText("ERROR: Unrecognized Command Recieved");
                      break;
@@ -185,6 +178,21 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          }
       }  // run
    }
+ 
+ 
+ 
+ public void gameStart(){
+  //Setup
+    //Get and set Array Category
+    //Shuffle Players and set Teams
+    //Randomize and set up timer
+    //
+  //Gameplay
+    //
+ 
+ 
+ }
+ 
  
 }
 
