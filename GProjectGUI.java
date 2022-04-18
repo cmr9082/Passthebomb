@@ -50,6 +50,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private VBox vbGame2 = new VBox(8);
    private FlowPane fpChatSend = new FlowPane(5,5);
    private FlowPane fpNext = new FlowPane(5,5);
+   private FlowPane fpPoints = new FlowPane(5,5);
    
    private ProgressBar timer = new ProgressBar();
    private TextField currentWord = new TextField();
@@ -107,7 +108,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       fpNext.getChildren().add(btnNext);
       fpChatSend.getChildren().addAll(tfChatInput,btnSend);
       vbGame1.getChildren().addAll(timer,currentWord,fpNext,taChat,fpChatSend);
-      vbGame2.getChildren().addAll(taList,btnLeave,lblHost,btnGrab,btnStart,cbCategory,btnRelinquish);
+      vbGame2.getChildren().addAll(taList,btnLeave,fpPoints);
       fpNext.setAlignment(Pos.CENTER);
       taList.setPrefWidth(250);
       taChat.setPrefWidth(400);
@@ -119,7 +120,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       btnStart.setDisable(true);
       btnRelinquish.setDisable(true);
       cbCategory.setDisable(true);
-      cbCategory.getItems().addAll("Everyday Objects","Phrases","Activities","Brands","Video Games","Movies","Foods");
+      
       btnLeave.setOnAction(this);
       btnNext.setOnAction(this);
       btnSend.setOnAction(this);
@@ -152,31 +153,13 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          case "Leave":
             doLeave();
             
-            break;
-         case "Grab Host":
-            try{
-            oos.writeUTF("HOST-GRAB");
-            oos.flush();
-            }catch(Exception e){System.out.println(e.getMessage());}
-            break;   
-            
-         case "Relinquish Host":
-            try{
-            oos.writeUTF("HOST-RELIQUISH");
-            oos.flush();
-            }catch(Exception e){System.out.println(e.getMessage());}
-            break;                
+            break;        
             
          case "Send":
             doSend();
             break;
           
                      
-         case "Start Game":
-            //Theoretically would start another method maybe in another class or sumthin
-            //doStart();
-            
-            break;
       }
    }
 

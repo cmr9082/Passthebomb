@@ -16,13 +16,15 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    private Stage stage;
    private Scene scene;
    private VBox root = new VBox();
-   private FlowPane fp1 = new FlowPane();
+   private FlowPane fp1 = new FlowPane(10,10);
    private Object lock = new Object();
    
    // GUI Components
    private Label lblServer = new Label("Server IP:");
    private TextField tfServer = new TextField();
    private TextArea taLog = new TextArea();
+   private Button btnStart = new Button("Start Game");
+   private ComboBox cbCategory = new ComboBox();
    
    Vector<ObjectOutputStream> clients = new Vector<ObjectOutputStream>();
    
@@ -51,8 +53,9 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       scene=new Scene(root, 500, 500); 
       stage.setScene(scene);                 
       stage.show();
-      fp1.getChildren().addAll(lblServer,tfServer);
+      fp1.getChildren().addAll(lblServer,tfServer, btnStart, cbCategory);
       root.getChildren().addAll(fp1,taLog);
+      cbCategory.getItems().addAll("Everyday Objects","Phrases","Activities","Brands","Video Games","Movies","Foods");
       tfServer.setEditable(false);
       taLog.setEditable(false);
       taLog.setPrefHeight(450);
@@ -142,7 +145,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      break;
                      
                   case "DISCONNECT":
-                     taLog.appendText("Player "+name+" has left");
+                     taLog.appendText("Player "+name+" has left\n");
                      pack.playerlistRemove(name);
                     
                      socket2.close();
