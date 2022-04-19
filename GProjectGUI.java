@@ -1,3 +1,5 @@
+import javafx.scene.text.Font;
+import javafx.scene.text.*;
 import javafx.application.Application;
 import javafx.event.*;
 import javafx.scene.*;
@@ -11,6 +13,9 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 import javafx.application.Platform;
+import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  * GUIStarter - class to help with JavaFX classes
@@ -34,23 +39,32 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private Scene sceneStart;
    private VBox rootStart = new VBox(8);
    private FlowPane fpMenu0 = new FlowPane(10,10);
-   private FlowPane fpMenu1 = new FlowPane(50,30);
+   private Pane fpMenu1 = new Pane();
+   private Pane fpMenu2 = new Pane();
+   private Pane fpMenu3 = new Pane();
    private Button btnHTP = new Button("How to Play");
+   private Button btnPlay = new Button("Play");
    private Button btnJoin = new Button("Join");
-   private Image title = new Image("/title.png",true);
+   private Image title = new Image("/startBomb.png",true);
    private ImageView titleView = new ImageView(title);
+   
+   //Input Scene
+
    private TextInputDialog tidName = new TextInputDialog();
-   private TextInputDialog tidIP = new TextInputDialog();   
+   private TextInputDialog tidIP = new TextInputDialog();  
+   private TextField tfIP = new TextField();
+   private TextField tfName = new TextField();
+   private Button btnEnter = new Button("Enter"); 
    
    
    //Game Menu Intiations
+   
    private Scene sceneGame;   
    private FlowPane rootGame = new FlowPane(10,10);
    private VBox vbGame1 = new VBox(8);
    private VBox vbGame2 = new VBox(8);
    private FlowPane fpChatSend = new FlowPane(5,5);
    private FlowPane fpNext = new FlowPane(5,5);
-   private FlowPane fpPoints = new FlowPane(5,5);
    
    private ProgressBar timer = new ProgressBar();
    private TextField currentWord = new TextField();
@@ -79,36 +93,129 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    // Called automatically after launch sets up javaFX
    public void start(Stage _stage) throws Exception {
       //Initial Setups
-      stage = _stage;                      
+      stage = _stage;    
+      rootStart.setId("pane");                  
       stage.setTitle("Pass The Bomb");            
-      sceneStart = new Scene(rootStart, 500, 500);
+      sceneStart = new Scene(rootStart, 500, 350);
+      rootStart.setStyle("-fx-background-image: url(/startBomb.png); -fx-background-repeat: no-repeat; -fx-background-size: 500 350; -fx-background-position: center center;");
+   
       sceneGame = new Scene(rootGame, 700, 600);                             
       stage.setScene(sceneStart);                 
-      stage.show();                          
-      
-      
+      stage.show();   
+   
+
       //Setting Up Start Menu
-      titleView.setFitWidth(250);
-      titleView.setFitHeight(250);
-      fpMenu1.getChildren().addAll(btnJoin,btnHTP);
-      fpMenu1.setAlignment(Pos.CENTER);
+   //    titleView.setFitWidth(300);
+   //       titleView.setFitHeight(250);
+      
+   //       fpMenu1.setAlignment(Pos.CENTER);
+   
+      //Titles for the Start scene
+      Text lblTitle = new Text();
+      lblTitle.setText("Pass The Bomb!");
+      Text lblIP = new Text();
+      lblIP.setText("Enter IP:");
+      Text lblName = new Text();
+      lblName.setText("Enter UserName:");
+      
+      //Button Styles
+
+      btnJoin.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
+      btnHTP.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff; -fx-padding: 0px; -fx-border-radius: 15px;" );
+      btnEnter.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
+      btnPlay.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
+
+
+      lblTitle.setFont(Font.font ("Jockey One", 50));
+      lblIP.setFont(Font.font ("Jockey One", 50));
+      lblName.setFont(Font.font ("Jockey One", 43));
+      btnPlay.setFont(Font.font ("Jockey One", 30));
+      btnHTP.setFont(Font.font ("Jockey One", 30));
+      btnEnter.setFont(Font.font ("Jockey One", 30));
+      btnJoin.setFont(Font.font ("Jockey One", 30));
+   
+         
+      btnPlay.setPrefWidth(75);
+      btnPlay.setPrefHeight(50);
+      btnPlay.setLayoutX(125);
+      btnPlay.setLayoutY(175);
+      btnHTP.setPrefWidth(150);
+      btnHTP.setPrefHeight(50);      
+      btnHTP.setLayoutX(225);
+      btnHTP.setLayoutY(175);
+      btnEnter.setPrefWidth(100);
+      btnEnter.setPrefHeight(50);
+      btnEnter.setLayoutX(185);
+      btnEnter.setLayoutY(200);
+      btnJoin.setPrefWidth(100);
+      btnJoin.setPrefHeight(50);
+      btnJoin.setLayoutX(185);
+      btnJoin.setLayoutY(200);
+      lblTitle.setLayoutY(160);
+      lblTitle.setLayoutX(125);
+      lblIP.setLayoutY(145);
+      lblIP.setLayoutX(165);
+      lblName.setLayoutY(160);
+      lblName.setLayoutX(120);
+
+      
+      TextField tfIP = tidIP.getEditor();
+      tfIP.setPrefWidth(175);
+      tfIP.setPrefHeight(20);
+      tfIP.setLayoutX(150);
+      tfIP.setLayoutY(165);    
+      TextField tfName = tidName.getEditor();
+      tfName.setPrefWidth(175);
+      tfName.setPrefHeight(20);
+      tfName.setLayoutX(150);
+      tfName.setLayoutY(165);
+   
       fpMenu0.getChildren().add(titleView);
       fpMenu0.setAlignment(Pos.CENTER);
-      rootStart.getChildren().addAll(fpMenu0,fpMenu1);
+      rootStart.getChildren().addAll(fpMenu1);
       tidName.setHeaderText("Enter Your Username");
-      tidName.setContentText("Name: ");
-      tidIP.setHeaderText("Enter the Server's IP Address");
-      tidIP.setContentText("Server IP: ");         
-      btnJoin.setOnAction(this);
-      btnHTP.setOnAction(this);
+      // tidName.setContentText("");
+      tidName.setGraphic(null);
+      tidName.setHeaderText(null);
+      tidIP.setGraphic(null);
+      tidIP.setHeaderText(null);
+      // tidIP.setContentText("");
+      fpMenu1.getChildren().addAll(lblTitle, btnPlay,btnHTP);
+      fpMenu2.getChildren().addAll(lblIP, btnEnter, tfIP);
+      fpMenu3.getChildren().addAll(lblName, btnJoin, tfName);
       
+      DialogPane dPane1 = tidIP.getDialogPane();
+      dPane1.setStyle("-fx-background-image: url(/startBomb.png);-fx-background-size: 500 350;  -fx-background-repeat: no-repeat; -fx-background-position: center center;");
+      dPane1.setPrefWidth(500);
+      dPane1.setPrefHeight(350);
+      dPane1.getButtonTypes().remove(ButtonType.CANCEL);
+      dPane1.lookupButton(ButtonType.OK).setVisible(false);
+ 
+      dPane1.getChildren().add(fpMenu2);
+
+      DialogPane dPane2 = tidName.getDialogPane();
+      dPane2.setStyle("-fx-background-image: url(/startBomb.png);-fx-background-size: 500 350;  -fx-background-repeat: no-repeat; -fx-background-position: center center;");
+      dPane2.setPrefWidth(500);
+      dPane2.getButtonTypes().remove(ButtonType.CANCEL);
+      dPane2.lookupButton(ButtonType.OK).setVisible(false);     
+      dPane2.setPrefHeight(350);
+      dPane2.getChildren().add(fpMenu3);   
+      
+      btnEnter.setDefaultButton(true);
+      btnJoin.setDefaultButton(true);  
+  
+      btnHTP.setOnAction(this);
+      btnEnter.setOnAction(event -> tidIP.close());
+      btnPlay.setOnAction(this);
+      btnJoin.setOnAction(event -> tidName.close());
+     
       //Setting Up Game Menu
       timer.setProgress(1.0F);
       rootGame.getChildren().addAll(vbGame1,vbGame2);
       fpNext.getChildren().add(btnNext);
       fpChatSend.getChildren().addAll(tfChatInput,btnSend);
       vbGame1.getChildren().addAll(timer,currentWord,fpNext,taChat,fpChatSend);
-      vbGame2.getChildren().addAll(taList,btnLeave,fpPoints);
+      vbGame2.getChildren().addAll(taList,btnLeave,lblHost,btnGrab,btnStart,cbCategory,btnRelinquish);
       fpNext.setAlignment(Pos.CENTER);
       taList.setPrefWidth(250);
       taChat.setPrefWidth(400);
@@ -120,12 +227,13 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       btnStart.setDisable(true);
       btnRelinquish.setDisable(true);
       cbCategory.setDisable(true);
-      
+      cbCategory.getItems().addAll("Everyday Objects","Phrases","Activities","Brands","Video Games","Movies","Foods");
       btnLeave.setOnAction(this);
       btnNext.setOnAction(this);
       btnSend.setOnAction(this);
       btnGrab.setOnAction(this);
       btnStart.setOnAction(this);
+      btnPlay.setOnAction(this);
       btnRelinquish.setOnAction(this);
    
    }
@@ -136,7 +244,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       
       // Switch on its name
       switch(btn.getText()) {
-         case "Join":
+         case "Play":
             doConnect();
             stage.setScene(sceneGame);
             break;
@@ -161,10 +269,14 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
 //Sending   
    public void doConnect(){
    
-      tidIP.showAndWait();
-      tidName.showAndWait();
-      String ip = (String)tidIP.getResult();
-      String name = (String)tidName.getResult();
+      String ip = null;
+      String name = null;
+      
+      Optional<String> result = tidIP.showAndWait();
+      ip = tidIP.getEditor().getText();
+      
+      Optional<String> result2 = tidName.showAndWait();
+      name = tidName.getEditor().getText();
       
       try{
          socket = new Socket(ip, 45549);
