@@ -133,11 +133,6 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    public void handle(ActionEvent evt) {
       // Get the button that was clicked
       Button btn = (Button)evt.getSource();
-      try{
-         //ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-      }catch(Exception e){
-         e.getMessage();
-      }
       
       // Switch on its name
       switch(btn.getText()) {

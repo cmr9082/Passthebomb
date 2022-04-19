@@ -29,6 +29,12 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    
    Vector<ObjectOutputStream> clients = new Vector<ObjectOutputStream>();
    
+   
+   //Game Components
+   Prompts prompts = new Prompts();
+   Vector<String> promptSet = null;
+   
+   
    //Sending Variables
    Variables pack = new Variables();
    Variables packMsg = new Variables();
@@ -60,7 +66,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       tfServer.setEditable(false);
       taLog.setEditable(false);
       taLog.setPrefHeight(450);
-      
+      cbCategory.getSelectionModel().selectFirst();
+      btnStart.setOnAction(this);
       try{tfServer.appendText(InetAddress.getLocalHost().getHostAddress().trim());}
       catch(Exception e){taLog.appendText("Error Getting Local IP: "+e.getMessage()+"\n");}
    
@@ -75,8 +82,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    }
       
 
-   public void handle(ActionEvent evt) {}
-   
+   public void handle(ActionEvent evt) {gameStart();}
+
    
    private void doServerStuff() {
       try {
@@ -156,14 +163,10 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                   case "SEND":
                      String name2 = ooi.readUTF();
                      packMsg.playerlistAdd(name2);
-                     //broadcase to all connected user
                      broadcastMessage("REFRESHMSG",packMsg);
                      
                      break;  
                      
-                  case "START":
-                     gameStart();
-                     break;
                   default:
                       taLog.appendText("ERROR: Unrecognized Command Recieved");
                      break;
@@ -184,13 +187,38 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
  public void gameStart(){
   //Setup
     //Get and set Array Category
+      taLog.appendText("Game Started!\n");
+
+      switch(cbCategory.getValue().toString()){
+         case "Everyday Object":
+            promptSet = prompts.getEverydayObjects();
+            break;
+         case "Phrases":
+            promptSet = prompts.getPhrases();
+            break;      
+         case "Activities":
+            promptSet = prompts.getActivities();
+            break;      
+         case "Brands":
+            promptSet = prompts.getBrands();
+            break;
+         case "Foods":
+            promptSet = prompts.getFoods();
+            break;
+         case "Video Games":
+            promptSet = prompts.getVideoGames();
+            break;
+         case "Movies":
+            promptSet = prompts.getMovies();
+            break;
+      }
     //Shuffle Players and set Teams
     //Randomize and set up timer
     //
   //Gameplay
     //
  
- 
+
  }
  
  
