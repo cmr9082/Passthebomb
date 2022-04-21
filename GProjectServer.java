@@ -214,11 +214,23 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       }
     //Shuffle Players and set Teams
     //Randomize and set up timer
-    //
-  //Gameplay
-    //
+  /*//Gameplay
+      *
+      Isolate a player/ give them the turn
+      Iterate the promptSet and send to isolated client
+      stop the other team from talking
+      Listen for correct answer
+      Upon correct answer bomb gets passed
+      *repeat, but while happening when timer hits zero break the iteration
+      allocate/update points
+      checks if auto start is on if so waits a few seconds then recurses 
+      otherwise stops
+      
+      include reset points
+      
+    
  
-
+   */
  }
  
  
