@@ -13,56 +13,38 @@ public class Prompts implements Serializable{
    }
    
    public Vector<String> getEverydayObjects(){
-      if(promptSet.size()>0){
-         for(int i = 0; i<promptSet.size();i++){
-            promptSet.remove(promptSet.get(i));
-         }
-      }
+      promptSet.clear();
+      promptSet.add("pencil");
+      
       
       return promptSet;
    }
    public Vector<String> getPhrases(){
-      if(promptSet.size()>0){
-         for(int i = 0; i<promptSet.size();i++){
-            promptSet.remove(promptSet.get(i));
-         }
-      }
+      promptSet.clear();
+      promptSet.add("Kill Two Birds With One Stone");
       
       return promptSet;
    }
    public Vector<String> getActivities(){
-      if(promptSet.size()>0){
-         for(int i = 0; i<promptSet.size();i++){
-            promptSet.remove(promptSet.get(i));
-         }
-      }
+      promptSet.clear();
+      promptSet.add("Riding a Bike");
       
       return promptSet;
    }
    public Vector<String> getBrands(){
-      if(promptSet.size()>0){
-         for(int i = 0; i<promptSet.size();i++){
-            promptSet.remove(promptSet.get(i));
-         }
-      }
+      promptSet.clear();
+      promptSet.add("Coke");
       
       return promptSet;
    }
    public Vector<String> getVideoGames(){
-      if(promptSet.size()>0){
-         for(int i = 0; i<promptSet.size();i++){
-            promptSet.remove(promptSet.get(i));
-         }
-      }
+      promptSet.clear();
+      promptSet.add("Minecraft");
       
       return promptSet;
    }
    public Vector<String> getMovies(){
-      if(promptSet.size()>0){
-         for(int i = 0; i<promptSet.size();i++){
-            promptSet.remove(promptSet.get(i));
-         }
-      }
+      promptSet.clear();
       promptSet.add("Citizen Kane");
       promptSet.add("The Godfather");
       promptSet.add("Casablanca");
@@ -128,11 +110,7 @@ public class Prompts implements Serializable{
       return promptSet;
    }
    public Vector<String> getFoods(){
-      if(promptSet.size()>0){
-         for(int i = 0; i<promptSet.size();i++){
-            promptSet.remove(promptSet.get(i));
-         }
-      }
+      promptSet.clear();
       promptSet.add("Pizza");
       promptSet.add("Burger");
       promptSet.add("Macaroni and Cheese");

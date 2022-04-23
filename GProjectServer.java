@@ -28,7 +28,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    private RadioButton btnAuto = new RadioButton("Auto Start");
    
    Vector<ObjectOutputStream> clients = new Vector<ObjectOutputStream>();
-   
+   Vector<ObjectOutputStream> team1 = new Vector<ObjectOutputStream>();
+   Vector<ObjectOutputStream> team2 = new Vector<ObjectOutputStream>();   
    
    //Game Components
    Prompts prompts = new Prompts();
@@ -116,6 +117,42 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          }
       }
    }
+   private void team1BroadcastMessage(String command, Object data) {
+      System.out.println("sending broadcast message : " + team1.size());  
+      for(ObjectOutputStream clientOutStream : team1) {
+         System.out.println("sending broadcast message ==");
+         try {
+            clientOutStream.writeUTF(command);
+            clientOutStream.flush();
+            Variables v = (Variables)data;
+            System.out.println("Sending player data " + v.toString());
+            clientOutStream.writeObject(data);
+            clientOutStream.reset();
+            clientOutStream.flush();
+         } catch(Exception ex)
+         {
+            ex.printStackTrace();
+         }
+      }
+   }
+   private void team2BroadcastMessage(String command, Object data) {
+      System.out.println("sending broadcast message : " + team2.size());  
+      for(ObjectOutputStream clientOutStream : team2) {
+         System.out.println("sending broadcast message ==");
+         try {
+            clientOutStream.writeUTF(command);
+            clientOutStream.flush();
+            Variables v = (Variables)data;
+            System.out.println("Sending player data " + v.toString());
+            clientOutStream.writeObject(data);
+            clientOutStream.reset();
+            clientOutStream.flush();
+         } catch(Exception ex)
+         {
+            ex.printStackTrace();
+         }
+      }
+   }
             
    class ClientThread extends Thread {
       Socket socket2 = null;
@@ -145,9 +182,6 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      name = ooi.readUTF();
                      taLog.appendText("Player "+name+" has Joined\n");
                      pack.playerlistAdd(name);
-                     
-                     
-
                      broadcastMessage("REFRESHLIST",pack);
 
                      break;
@@ -213,24 +247,52 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             break;
       }
     //Shuffle Players and set Teams
-    //Randomize and set up timer
-  /*//Gameplay
-      *
-      Isolate a player/ give them the turn
-      Iterate the promptSet and send to isolated client
-      stop the other team from talking
-      Listen for correct answer
-      Upon correct answer bomb gets passed
-      *repeat, but while happening when timer hits zero break the iteration
-      allocate/update points
-      checks if auto start is on if so waits a few seconds then recurses 
-      otherwise stops
+   for(int i = 0;i<clients.size();i++){
+      if((clients.indexOf(clients.get(i)))%2==0){
+         team1.add(clients.get(i));
+      }else{
+         team2.add(clients.get(i));
+      }
+   }
+   taLog.appendText("Team 1: ");
+   for(int i = 0;i<team1.size();i++){
+      taLog.appendText(team1.get(i)+",");
+   }   
+   taLog.appendText("\nTeam 2: ");
+   for(int i = 0;i<team2.size();i++){
       
-      include reset points
+   }
+   team1BroadcastMessage("TEAM1SET",pack);     
+   team2BroadcastMessage("TEAM2SET",pack);
+   broadcastMessage("REFRESHLIST",pack);
+    //Randomize and set up timer
+    
+    
+    
+  //Gameplay
+      
+      //Isolate a player/ give them the turn
+      for(int i = 0;i<clients.size();i++){
+      
+      //Iterate the promptSet and send to isolated client
+      
+      //stop the other team from talking
+      //Listen for correct answer
+      //Upon correct answer bomb gets passed
+      //*repeat, but while happening when timer hits zero break the iteration
+      //allocate/update points
+      //checks if auto start is on if so waits a few seconds then recurses 
+      //otherwise stops
+      
+
       
     
- 
-   */
+
+   
+   
+
+   
+   }
  }
  
  

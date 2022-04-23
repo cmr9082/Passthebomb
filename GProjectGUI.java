@@ -31,6 +31,9 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private Scanner scn = null;
    private ObjectInputStream ooi = null;
    private ObjectOutputStream oos = null;
+   private boolean onTeam1 = false;
+   private boolean onTeam2 = false;
+   
    //private Variables pack = new Variables();
    private Vector<String> localList = null;
    private Vector<String> localMsg = null;
@@ -338,7 +341,13 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          taList.setText("");
          for(int i = 0;i< playerList.size();i++){
             System.out.println("Adding ==> " + playerList.get(i));
+            if(onTeam1){
+            taList.appendText("Team 1: "+playerList.get(i)+"\n");
+            }else if(onTeam2){
+            taList.appendText("Team 2: "+playerList.get(i)+"\n");
+            }else{
             taList.appendText(playerList.get(i)+"\n");
+            }
          }
    }
    
@@ -377,15 +386,13 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                         refreshMsg(var2);
 
                           break;
-                      case "NO-HOST":
-                        btnGrab.setDisable(true);
-                        btnStart.setDisable(true);
-                        btnRelinquish.setDisable(true);
-                        cbCategory.setDisable(true);
+                      case "TEAM1SET":
+                        onTeam1 = true;
                         break;
-                      case "HOST-RECIEVE":
-                      
-                        break;
+                      case "TEAM2SET":
+                        onTeam2 = true;
+                        break;                        
+                         
                       default:
                         System.out.println("Invalid command: " + command);
                   }
