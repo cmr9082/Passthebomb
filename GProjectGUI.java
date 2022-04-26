@@ -16,6 +16,8 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 /**
  * GUIStarter - class to help with JavaFX classes
@@ -33,6 +35,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private ObjectOutputStream oos = null;
    private boolean onTeam1 = false;
    private boolean onTeam2 = false;
+   private Node root;
    
    //private Variables pack = new Variables();
    private Vector<String> localList = null;
@@ -95,17 +98,24 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    // Called automatically after launch sets up javaFX
    public void start(Stage _stage) throws Exception {
       //Initial Setups
+   
+      
+      
       stage = _stage;    
+      
       rootStart.setId("pane");                  
       stage.setTitle("Pass The Bomb");            
       sceneStart = new Scene(rootStart, 500, 350);
       rootStart.setStyle("-fx-background-image: url(/startBomb.png); -fx-background-repeat: no-repeat; -fx-background-size: 500 350; -fx-background-position: center center;");
    
-      sceneGame = new Scene(rootGame, 700, 600);                             
+      
+      
+      sceneGame = new Scene(rootGame, 700, 600); 
+                              
       stage.setScene(sceneStart);                 
       stage.show();   
    
-
+   
       //Setting Up Start Menu
    //    titleView.setFitWidth(300);
    //       titleView.setFitHeight(250);
@@ -121,19 +131,21 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       lblName.setText("Enter UserName:");
       
       //Button Styles
-
+   
       btnJoin.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
       btnHTP.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff; -fx-padding: 0px; -fx-border-radius: 15px;" );
       btnEnter.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
       btnPlay.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
-      btnLeave.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
-
-
+      btnLeave.setStyle("-fx-background-color: #ECC402; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 15px;");
+      btnSend.setStyle("-fx-background-color: #ECC402; -fx-text-fill: #ffffff; -fx-width: 400;  -fx-border-radius: 15px; -fx-padding: 15px;");
+   
+   
       lblTitle.setFont(Font.font ("Jockey One", 50));
       lblIP.setFont(Font.font ("Jockey One", 50));
       lblName.setFont(Font.font ("Jockey One", 43));
       btnPlay.setFont(Font.font ("Jockey One", 30));
       btnLeave.setFont(Font.font ("Jockey One", 30));
+      btnSend.setFont(Font.font ("Jockey One", 30));
       btnHTP.setFont(Font.font ("Jockey One", 30));
       btnEnter.setFont(Font.font ("Jockey One", 30));
       btnJoin.setFont(Font.font ("Jockey One", 30));
@@ -161,7 +173,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       lblIP.setLayoutX(165);
       lblName.setLayoutY(160);
       lblName.setLayoutX(120);
-
+   
       
       TextField tfIP = tidIP.getEditor();
       tfIP.setPrefWidth(175);
@@ -194,9 +206,9 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       dPane1.setPrefHeight(350);
       dPane1.getButtonTypes().remove(ButtonType.CANCEL);
       dPane1.lookupButton(ButtonType.OK).setVisible(false);
- 
+   
       dPane1.getChildren().add(fpMenu2);
-
+   
       DialogPane dPane2 = tidName.getDialogPane();
       dPane2.setStyle("-fx-background-image: url(/startBomb.png);-fx-background-size: 500 350;  -fx-background-repeat: no-repeat; -fx-background-position: center center;");
       dPane2.setPrefWidth(500);
@@ -207,7 +219,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       
       btnEnter.setDefaultButton(true);
       btnJoin.setDefaultButton(true);  
-  
+   
       btnHTP.setOnAction(this);
       btnEnter.setOnAction(event -> tidIP.close());
       btnPlay.setOnAction(this);
@@ -215,30 +227,35 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
      
       //Setting Up Game Menu
       timer.setProgress(1.0F);
-//       BorderPane border = new BorderPane();
-//    //    border.getChildren().add(cPane);
-//       border.setCenter(cPane);
+   //       BorderPane border = new BorderPane();
+   //    //    border.getChildren().add(cPane);
+   //       border.setCenter(cPane);
       rootGame.getChildren().addAll(cPane);
    
      
       rootGame.setStyle("-fx-background-color: #BA1009; -fx-border-width: 30px; -fx-border-color: #ECC402;");
       cPane.setPrefSize(400, 400);
- 
+   
       cPane.relocate(100, 100);
-
+   
       fpNext.getChildren().add(btnNext);
      
       cPane.getChildren().addAll(taChat,fpChatSend,tfChatInput, btnLeave, btnSend);
-  
+   
       // timer,currentWord,fpNext,taChat,fpChatSend, taList, btnLeave
-      btnLeave.setLayoutX(400);
-      btnLeave.setLayoutY(300);
+      btnLeave.setLayoutX(510);
+      btnLeave.setLayoutY(450);
+      btnSend.setPrefWidth(400);
+      btnSend.setLayoutX(115);
+      btnSend.setLayoutY(315);
       taChat.setLayoutX(115);
       taChat.setLayoutY(50);
       tfChatInput.setLayoutX(115);
-      tfChatInput.setLayoutY(275);
+      tfChatInput.setLayoutY(270);
     
       taChat.setStyle("-fx-border-radius: 15px;");
+      
+      
       
       
    
@@ -252,7 +269,15 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       taChat.setEditable(false);
       btnLeave.setOnAction(this);
       btnNext.setOnAction(this);
-      btnSend.setOnAction(this);;
+      btnSend.setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent k) {
+            if (k.getCode().equals(KeyCode.ENTER)) {
+                doSend();
+            }
+        }
+});
+  
       btnPlay.setOnAction(this);
    
    }
@@ -326,45 +351,45 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          oos.writeUTF(chat);
          oos.flush();
          tfChatInput.setText("");
-        } catch (Exception ex) {
+      } catch (Exception ex) {
          ex.printStackTrace();
-        }
+      }
    }
    
    private void doLeave(){
-    try{
-      oos.writeUTF("DISCONNECT");
-      oos.flush();     
-      socket.close();
-      stage.setScene(sceneStart);
-     }catch(Exception e){System.out.println(e.getMessage());}
+      try{
+         oos.writeUTF("DISCONNECT");
+         oos.flush();     
+         socket.close();
+         stage.setScene(sceneStart);
+      }catch(Exception e){System.out.println(e.getMessage());}
    }
    
    private void refreshMsg(Variables var) {
       //Loop through the variables to update the list
-         Vector<String> playerList = var.playerlistGet();
-         localList = playerList;
-         taChat.setText("");
-         for(int i = 0;i< playerList.size();i++){
-            System.out.println("Adding ==> " + playerList.get(i));
-            taChat.appendText(playerList.get(i)+"\n");
-         }
+      Vector<String> playerList = var.playerlistGet();
+      localList = playerList;
+      taChat.setText("");
+      for(int i = 0;i< playerList.size();i++){
+         System.out.println("Adding ==> " + playerList.get(i));
+         taChat.appendText(playerList.get(i)+"\n");
+      }
    }
    private void refreshList(Variables var) {
       //Loop through the variables to update the list
-         Vector<String> playerList = var.playerlistGet();
-         localList = playerList;
-         taList.setText("");
-         for(int i = 0;i< playerList.size();i++){
-            System.out.println("Adding ==> " + playerList.get(i));
-            if(onTeam1){
+      Vector<String> playerList = var.playerlistGet();
+      localList = playerList;
+      taList.setText("");
+      for(int i = 0;i< playerList.size();i++){
+         System.out.println("Adding ==> " + playerList.get(i));
+         if(onTeam1){
             taList.appendText("Team 1: "+playerList.get(i)+"\n");
-            }else if(onTeam2){
+         }else if(onTeam2){
             taList.appendText("Team 2: "+playerList.get(i)+"\n");
-            }else{
+         }else{
             taList.appendText(playerList.get(i)+"\n");
-            }
          }
+      }
    }
    
    
@@ -376,42 +401,42 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          try {
             //Loop to keep listening
             while(true) {
-                  String command = ooi.readUTF();
+               String command = ooi.readUTF();
                   //it is a command
-                  System.out.println("Command received : " + command);
-                  switch(command) {
-                     case "REFRESHLIST":
+               System.out.println("Command received : " + command);
+               switch(command) {
+                  case "REFRESHLIST":
                         //command to refresh the list
                         //Server is sending var object. readit.
-                        System.out.println("Processing command: " + command);
-                        Variables var = (Variables)ooi.readObject();
-                        System.out.println("received data of size " + var.playerlistGet().size());
-                        refreshList(var);
-//                         Platform.runLater(
-//                            new Runnable() {
-//                               public void run() {
-//                                  refreshList(var);
-//                               }
-//                            });
-                         break;
+                     System.out.println("Processing command: " + command);
+                     Variables var = (Variables)ooi.readObject();
+                     System.out.println("received data of size " + var.playerlistGet().size());
+                     refreshList(var);
+                  //                         Platform.runLater(
+                  //                            new Runnable() {
+                  //                               public void run() {
+                  //                                  refreshList(var);
+                  //                               }
+                  //                            });
+                     break;
                       
-                      case "REFRESHMSG":                    
-                        System.out.println("Processing command: " + command);
-                        Variables var2 = (Variables)ooi.readObject();
-                        System.out.println("received data of size " + var2.playerlistGet().size());
-                        refreshMsg(var2);
-
-                          break;
-                      case "TEAM1SET":
-                        onTeam1 = true;
-                        break;
-                      case "TEAM2SET":
-                        onTeam2 = true;
-                        break;                        
+                  case "REFRESHMSG":                    
+                     System.out.println("Processing command: " + command);
+                     Variables var2 = (Variables)ooi.readObject();
+                     System.out.println("received data of size " + var2.playerlistGet().size());
+                     refreshMsg(var2);
+                  
+                     break;
+                  case "TEAM1SET":
+                     onTeam1 = true;
+                     break;
+                  case "TEAM2SET":
+                     onTeam2 = true;
+                     break;                        
                          
-                      default:
-                        System.out.println("Invalid command: " + command);
-                  }
+                  default:
+                     System.out.println("Invalid command: " + command);
+               }
             }
          } catch(Exception ex) {
             ex.printStackTrace();
@@ -423,5 +448,4 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
     
    
 
-   
    
