@@ -26,6 +26,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    private Button btnStart = new Button("Start Game");
    private ComboBox cbCategory = new ComboBox();
    private RadioButton btnAuto = new RadioButton("Auto Start");
+   private Pane pLog = new Pane();
+   private Pane pButtons = new Pane();
    
    Vector<ObjectOutputStream> clients = new Vector<ObjectOutputStream>();
    Vector<ObjectOutputStream> team1 = new Vector<ObjectOutputStream>();
@@ -40,6 +42,16 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    Variables pack = new Variables();
    Variables packMsg = new Variables();
    String name = "";
+   double width = 300;
+   double height = 300;
+   
+   
+
+  //  lblTitle.setLayoutY(160);
+//    lblTitle.setLayoutX(125);
+//    fpMenu1.getChildren().add(lblTitle);
+//    root.getChildren().addAll(fpMenu1);
+
 
    public static void main(String[] args) {
       launch(args);
@@ -58,15 +70,42 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          new EventHandler<WindowEvent>() {
             public void handle(WindowEvent evt) {System.exit(0);}});
       stage.setResizable(false);
-      scene=new Scene(root, 550, 500); 
+      scene=new Scene(root, 600, 600); 
       stage.setScene(scene);                 
       stage.show();
-      fp1.getChildren().addAll(lblServer,tfServer, btnStart, cbCategory,btnAuto);
-      root.getChildren().addAll(fp1,taLog);
+      
+      root.setStyle("-fx-background-image: url(/startBomb.png); -fx-background-repeat: no-repeat; -fx-background-size: 800 600; -fx-background-position: center center;");
+     
+      
+
+      pLog.getChildren().addAll(taLog, btnStart, btnAuto, cbCategory, tfServer, lblServer);
+
+      root.getChildren().addAll(pButtons, pLog);
+      
+      taLog.setPrefWidth(width);
+      taLog.setPrefHeight(height);
       cbCategory.getItems().addAll("Everyday Objects","Phrases","Activities","Brands","Video Games","Movies","Foods");
       tfServer.setEditable(false);
       taLog.setEditable(false);
-      taLog.setPrefHeight(450);
+      taLog.setPrefHeight(225);
+      taLog.setPrefWidth(150);
+      taLog.setLayoutY(200);
+      taLog.setLayoutX(130);
+      btnAuto.setLayoutX(300);
+      btnAuto.setLayoutY(235);
+      btnStart.setLayoutX(300);
+      btnStart.setLayoutY(270);
+      cbCategory.setLayoutX(300);
+      cbCategory.setLayoutY(200);
+      lblServer.setLayoutX(300);
+      lblServer.setLayoutY(305);
+      tfServer.setLayoutX(300);
+      tfServer.setLayoutY(330);
+      
+      //Move the buttons and other server features to the side of the textArea
+      
+     
+
       cbCategory.getSelectionModel().selectFirst();
       btnStart.setOnAction(this);
       try{tfServer.appendText(InetAddress.getLocalHost().getHostAddress().trim());}

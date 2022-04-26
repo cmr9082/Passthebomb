@@ -75,6 +75,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private TextArea taChat = new TextArea();
    private TextField tfChatInput = new TextField();
    private Button btnSend = new Button("Send");
+   private Pane cPane = new Pane();
    
    private TextArea taList = new TextArea();
    private Label lblT1Points = new Label("Team 1: ");
@@ -82,8 +83,6 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private TextField tfT1Points = new TextField();
    private TextField tfT2Points = new TextField();
    private Button btnLeave = new Button("Leave");
-   private Button btnGrab = new Button("Grab Host");
-   private Button btnStart = new Button("Start Game");
    private ComboBox cbCategory = new ComboBox();
    private Button btnRelinquish = new Button("Relinquish Host");
    private Label lblHost = new Label("Host Controls:");
@@ -127,12 +126,14 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       btnHTP.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff; -fx-padding: 0px; -fx-border-radius: 15px;" );
       btnEnter.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
       btnPlay.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
+      btnLeave.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
 
 
       lblTitle.setFont(Font.font ("Jockey One", 50));
       lblIP.setFont(Font.font ("Jockey One", 50));
       lblName.setFont(Font.font ("Jockey One", 43));
       btnPlay.setFont(Font.font ("Jockey One", 30));
+      btnLeave.setFont(Font.font ("Jockey One", 30));
       btnHTP.setFont(Font.font ("Jockey One", 30));
       btnEnter.setFont(Font.font ("Jockey One", 30));
       btnJoin.setFont(Font.font ("Jockey One", 30));
@@ -214,30 +215,45 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
      
       //Setting Up Game Menu
       timer.setProgress(1.0F);
-      rootGame.getChildren().addAll(vbGame1,vbGame2);
+//       BorderPane border = new BorderPane();
+//    //    border.getChildren().add(cPane);
+//       border.setCenter(cPane);
+      rootGame.getChildren().addAll(cPane);
+   
+     
+      rootGame.setStyle("-fx-background-color: #BA1009; -fx-border-width: 30px; -fx-border-color: #ECC402;");
+      cPane.setPrefSize(400, 400);
+ 
+      cPane.relocate(100, 100);
+
       fpNext.getChildren().add(btnNext);
-      fpChatSend.getChildren().addAll(tfChatInput,btnSend);
-      vbGame1.getChildren().addAll(timer,currentWord,fpNext,taChat,fpChatSend);
-      vbGame2.getChildren().addAll(taList,btnLeave,lblHost,btnGrab,btnStart,cbCategory,btnRelinquish);
-      fpNext.setAlignment(Pos.CENTER);
+     
+      cPane.getChildren().addAll(taChat,fpChatSend,tfChatInput, btnLeave, btnSend);
+  
+      // timer,currentWord,fpNext,taChat,fpChatSend, taList, btnLeave
+      btnLeave.setLayoutX(400);
+      btnLeave.setLayoutY(300);
+      taChat.setLayoutX(115);
+      taChat.setLayoutY(50);
+      tfChatInput.setLayoutX(115);
+      tfChatInput.setLayoutY(275);
+    
+      taChat.setStyle("-fx-border-radius: 15px;");
+      
+      
+   
       taList.setPrefWidth(250);
       taChat.setPrefWidth(400);
+      taChat.setPrefHeight(200);
       timer.setPrefWidth(400);
-      tfChatInput.setPrefWidth(350);
+      tfChatInput.setPrefWidth(400);
       currentWord.setEditable(false);
       taList.setEditable(false);
       taChat.setEditable(false);
-      btnStart.setDisable(true);
-      btnRelinquish.setDisable(true);
-      cbCategory.setDisable(true);
-      cbCategory.getItems().addAll("Everyday Objects","Phrases","Activities","Brands","Video Games","Movies","Foods");
       btnLeave.setOnAction(this);
       btnNext.setOnAction(this);
-      btnSend.setOnAction(this);
-      btnGrab.setOnAction(this);
-      btnStart.setOnAction(this);
+      btnSend.setOnAction(this);;
       btnPlay.setOnAction(this);
-      btnRelinquish.setOnAction(this);
    
    }
    
