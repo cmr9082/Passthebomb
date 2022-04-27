@@ -1,8 +1,15 @@
 import javafx.scene.text.Font;
 import javafx.scene.text.*;
 import javafx.application.Application;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.event.*;
+import javafx.beans.property.IntegerProperty;
 import javafx.scene.*;
+import javafx.util.Duration;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
@@ -35,7 +42,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private ObjectOutputStream oos = null;
    private boolean onTeam1 = false;
    private boolean onTeam2 = false;
-   private Node root;
+   
+   
    
    //private Variables pack = new Variables();
    private Vector<String> localList = null;
@@ -72,7 +80,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private FlowPane fpChatSend = new FlowPane(5,5);
    private FlowPane fpNext = new FlowPane(5,5);
    
-   private ProgressBar timer = new ProgressBar();
+
    private TextField currentWord = new TextField();
    private Button btnNext = new Button("Next");
    private TextArea taChat = new TextArea();
@@ -80,11 +88,10 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private Button btnSend = new Button("Send");
    private Pane cPane = new Pane();
    
+   
    private TextArea taList = new TextArea("Player List:");
-   private Label lblT1Points = new Label("Team 1: ");
-   private Label lblT2Points = new Label("Team 2: ");
-   private TextField tfT1Points = new TextField();
-   private TextField tfT2Points = new TextField();
+   private TextField tfT1Points = new TextField("Team 1: ");
+   private TextField tfT2Points = new TextField("Team 2: ");
    private Button btnLeave = new Button("Leave");
    private ComboBox cbCategory = new ComboBox();
    private Button btnRelinquish = new Button("Relinquish Host");
@@ -107,7 +114,35 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       stage.setTitle("Pass The Bomb");            
       sceneStart = new Scene(rootStart, 500, 350);
       rootStart.setStyle("-fx-background-image: url(/startBomb.png); -fx-background-repeat: no-repeat; -fx-background-size: 500 350; -fx-background-position: center center;");
+      
+  
+      FileInputStream stream = new FileInputStream("bomb.png");
+      Image image  = new Image(stream);
+      
+      ImageView imageView = new ImageView(image);
+      
+      ProgressBar timer = new ProgressBar();
+        IntegerProperty seconds = new SimpleIntegerProperty();
+        timer.progressProperty().bind(seconds.divide(60.0));
+        Timeline timeline = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(seconds, 0)),
+            new KeyFrame(Duration.minutes(1), e-> {
+                // do anything you need here on completion...
+                System.out.println("Minute over");
+            }, new KeyValue(seconds, 60))   
+        );
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+        
+
+       
    
+        
+
+    
+     
+      
+     
       
       
       sceneGame = new Scene(rootGame, 700, 600); 
@@ -150,7 +185,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       btnEnter.setFont(Font.font ("Jockey One", 30));
       btnJoin.setFont(Font.font ("Jockey One", 30));
    
-         
+      btnLeave.setPrefHeight(40);
       btnPlay.setPrefWidth(75);
       btnPlay.setPrefHeight(50);
       btnPlay.setLayoutX(125);
@@ -226,7 +261,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       btnJoin.setOnAction(event -> tidName.close());
      
       //Setting Up Game Menu
-      timer.setProgress(1.0F);
+     
    //       BorderPane border = new BorderPane();
    //    //    border.getChildren().add(cPane);
    //       border.setCenter(cPane);
@@ -240,27 +275,54 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
       fpNext.getChildren().add(btnNext);
      
-      cPane.getChildren().addAll(taChat,fpChatSend,tfChatInput, btnLeave, btnSend, taList);
-   
+      cPane.getChildren().addAll(taChat,timer,  imageView, fpChatSend,tfChatInput, btnLeave, btnSend, taList, tfT1Points, tfT2Points);
+      timer.setStyle("-fx-accent: #BA1009; -fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
       // timer,currentWord,fpNext,taChat,fpChatSend, taList, btnLeave
-      btnLeave.setLayoutX(510);
+      timer.setPrefHeight(40);
+      timer.setPrefWidth(310);
+      timer.setLayoutY(450);
+      timer.setLayoutX(125);
+      imageView.setLayoutY(400);
+      btnLeave.setLayoutX(495);
       btnLeave.setLayoutY(450);
       btnSend.setPrefWidth(400);
-      btnSend.setLayoutX(115);
+      btnSend.setLayoutX(35);
       btnSend.setLayoutY(315);
-      taList.setLayoutX(475);
+      taList.setLayoutX(460);
       taList.setLayoutY(50);
       taList.setPrefWidth(140);
       taList.setPrefHeight(200);
-      taChat.setLayoutX(50);
+      tfT1Points.setPrefWidth(140);
+      tfT1Points.setPrefHeight(50);
+      tfT2Points.setPrefWidth(140);
+      tfT2Points.setPrefHeight(50);
+      tfT1Points.setLayoutX(460);
+      tfT1Points.setLayoutY(270);
+      tfT2Points.setLayoutX(460);
+      tfT2Points.setLayoutY(334);
+      tfT1Points.setEditable(false);
+      tfT2Points.setEditable(false);
+      
+      try{
+         Image image1 = new Image(new FileInputStream("Rectangle 15.png"));
+
+      
+      
+      
+      }catch(Exception e){
+      
+         e.getMessage();
+      
+      }
+      
+      taChat.setLayoutX(35);
       taChat.setLayoutY(50);
-      tfChatInput.setLayoutX(115);
+      tfChatInput.setLayoutX(35);
       tfChatInput.setLayoutY(270);
       tfChatInput.setPromptText("Type your guess...");
       taChat.setStyle("-fx-border-radius: 15px;");
       taChat.setPrefWidth(400);
       taChat.setPrefHeight(200);
-      timer.setPrefWidth(400);
       tfChatInput.setPrefWidth(400);
       currentWord.setEditable(false);
       taList.setEditable(false);
@@ -439,7 +501,12 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          }
       }
    }  
+   
+   
+ 
 }
+
+ 
    
     
    
