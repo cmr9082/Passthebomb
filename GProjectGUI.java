@@ -42,6 +42,9 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private ObjectOutputStream oos = null;
    private boolean onTeam1 = false;
    private boolean onTeam2 = false;
+   private Prompts prompts = new Prompts();
+   private Vector<String> promptSet = new Vector<String>();
+   
    
    
    
@@ -81,7 +84,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private FlowPane fpNext = new FlowPane(5,5);
    
 
-   private TextField currentWord = new TextField();
+   private TextField tfWord = new TextField();
    private Button btnNext = new Button("Next");
    private TextArea taChat = new TextArea();
    private TextField tfChatInput = new TextField();
@@ -277,7 +280,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
      
       cPane.getChildren().addAll(taChat,timer,  imageView, fpChatSend,tfChatInput, btnLeave, btnSend, taList, tfT1Points, tfT2Points);
       timer.setStyle("-fx-accent: #BA1009; -fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
-      // timer,currentWord,fpNext,taChat,fpChatSend, taList, btnLeave
+      // timer,tfWord,fpNext,taChat,fpChatSend, taList, btnLeave
       timer.setPrefHeight(40);
       timer.setPrefWidth(310);
       timer.setLayoutY(450);
@@ -324,7 +327,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       taChat.setPrefWidth(400);
       taChat.setPrefHeight(200);
       tfChatInput.setPrefWidth(400);
-      currentWord.setEditable(false);
+      tfWord.setEditable(false);
       taList.setEditable(false);
       taChat.setEditable(false);
       btnLeave.setOnAction(this);
@@ -363,7 +366,11 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          case "Send":
             doSend();
             break;
-          
+            
+         case "Next":
+            tfWord.setText(getPrompt());
+            break;
+            
                      
       }
    }
@@ -483,14 +490,37 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      Variables var2 = (Variables)ooi.readObject();
                      System.out.println("received data of size " + var2.playerlistGet().size());
                      refreshMsg(var2);
-                  
                      break;
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
                   case "TEAM1SET":
                      onTeam1 = true;
                      break;
                   case "TEAM2SET":
                      onTeam2 = true;
                      break;                        
+                  case "PACK-MOVIES":
+                     promptSet = prompts.getMovies();
+                     break;
+                  case "YOUR-TURN":
+                     tfWord.setText(getPrompt());
+                     break;
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         
+                         
                          
                   default:
                      System.out.println("Invalid command: " + command);
@@ -504,6 +534,14 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
    
  
+ public String getPrompt(){
+   Collections.shuffle(promptSet);
+   try{
+   oos.writeUTF(promptSet.get(1));
+   oos.flush();
+   }catch(Exception e){System.out.println("Somethings wrong with getPrompt");}
+   return promptSet.get(1);
+ }
 }
 
  

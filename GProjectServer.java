@@ -282,7 +282,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             promptSet = prompts.getVideoGames();
             break;
          case "Movies":
-            promptSet = prompts.getMovies();
+            broadcastMessage("PACK-MOVIES",pack);
             break;
       }
     //Shuffle Players and set Teams
@@ -312,11 +312,18 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       
       //Isolate a player/ give them the turn
       for(int i = 0;i<clients.size();i++){
-      
       //Iterate the promptSet and send to isolated client
+      ObjectOutputStream turnPlayer = clients.get(i);
+      try{
+      turnPlayer.writeUTF("YOUR-TURN");
+      turnPlayer.flush();
       
+      
+      
+      }catch(Exception e){}
       //stop the other team from talking
       //Listen for correct answer
+      
       //Upon correct answer bomb gets passed
       //*repeat, but while happening when timer hits zero break the iteration
       //allocate/update points
