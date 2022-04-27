@@ -14,15 +14,13 @@ public class Prompts implements Serializable{
    
    public Vector<String> getEverydayObjects(){
       promptSet.clear();
-      promptSet.add("pencil");
-      
-      
+      promptSet.add("pencil");     
       return promptSet;
+      
    }
    public Vector<String> getPhrases(){
       promptSet.clear();
-      promptSet.add("Kill Two Birds With One Stone");
-      
+      promptSet.add("Kill Two Birds With One Stone");     
       return promptSet;
    }
    public Vector<String> getActivities(){

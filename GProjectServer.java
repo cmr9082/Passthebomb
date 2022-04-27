@@ -77,9 +77,9 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       root.setStyle("-fx-background-image: url(/startBomb.png); -fx-background-repeat: no-repeat; -fx-background-size: 800 600; -fx-background-position: center center;");
      
       
-
+   
       pLog.getChildren().addAll(taLog, btnStart, btnAuto, cbCategory, tfServer, lblServer);
-
+   
       root.getChildren().addAll(pButtons, pLog);
       
       taLog.setPrefWidth(width);
@@ -105,7 +105,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       //Move the buttons and other server features to the side of the textArea
       
      
-
+   
       cbCategory.getSelectionModel().selectFirst();
       btnStart.setOnAction(this);
       try{tfServer.appendText(InetAddress.getLocalHost().getHostAddress().trim());}
@@ -222,7 +222,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      taLog.appendText("Player "+name+" has Joined\n");
                      pack.playerlistAdd(name);
                      broadcastMessage("REFRESHLIST",pack);
-
+                  
                      break;
                      
                   case "DISCONNECT":
@@ -241,7 +241,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      break;  
                      
                   default:
-                      taLog.appendText("ERROR: Unrecognized Command Recieved");
+                     taLog.appendText("ERROR: Unrecognized Command Recieved");
                      break;
                }  // switch 
             }  //while
@@ -257,11 +257,11 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
  
  
  
- public void gameStart(){
-  //Setup
+   public void gameStart(){
+   //Setup
     //Get and set Array Category
       taLog.appendText("Game Started!\n");
-
+   
       switch(cbCategory.getValue().toString()){
          case "Everyday Object":
             promptSet = prompts.getEverydayObjects();
@@ -286,29 +286,29 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             break;
       }
     //Shuffle Players and set Teams
-   for(int i = 0;i<clients.size();i++){
-      if((clients.indexOf(clients.get(i)))%2==0){
-         team1.add(clients.get(i));
-      }else{
-         team2.add(clients.get(i));
+      for(int i = 0;i<clients.size();i++){
+         if((clients.indexOf(clients.get(i)))%2==0){
+            team1.add(clients.get(i));
+         }else{
+            team2.add(clients.get(i));
+         }
       }
-   }
-   taLog.appendText("Team 1: ");
-   for(int i = 0;i<team1.size();i++){
-      taLog.appendText(team1.get(i)+",");
-   }   
-   taLog.appendText("\nTeam 2: ");
-   for(int i = 0;i<team2.size();i++){
+      taLog.appendText("Team 1: ");
+      for(int i = 0;i<team1.size();i++){
+         taLog.appendText(team1.get(i)+",");
+      }   
+      taLog.appendText("\nTeam 2: ");
+      for(int i = 0;i<team2.size();i++){
       
-   }
-   team1BroadcastMessage("TEAM1SET",pack);     
-   team2BroadcastMessage("TEAM2SET",pack);
-   broadcastMessage("REFRESHLIST",pack);
+      }
+      team1BroadcastMessage("TEAM1SET",pack);     
+      team2BroadcastMessage("TEAM2SET",pack);
+      broadcastMessage("REFRESHLIST",pack);
     //Randomize and set up timer
     
     
     
-  //Gameplay
+   //Gameplay
       
       //Isolate a player/ give them the turn
       for(int i = 0;i<clients.size();i++){
@@ -323,18 +323,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       //checks if auto start is on if so waits a few seconds then recurses 
       //otherwise stops
       
-
-      
-    
-
-   
-   
-
-   
+      }
    }
- }
- 
- 
 }
 
       

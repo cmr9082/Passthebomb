@@ -80,7 +80,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private Button btnSend = new Button("Send");
    private Pane cPane = new Pane();
    
-   private TextArea taList = new TextArea();
+   private TextArea taList = new TextArea("Player List:");
    private Label lblT1Points = new Label("Team 1: ");
    private Label lblT2Points = new Label("Team 2: ");
    private TextField tfT1Points = new TextField();
@@ -102,7 +102,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       
       
       stage = _stage;    
-      
+      stage. setResizable(false);
       rootStart.setId("pane");                  
       stage.setTitle("Pass The Bomb");            
       sceneStart = new Scene(rootStart, 500, 350);
@@ -240,7 +240,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
       fpNext.getChildren().add(btnNext);
      
-      cPane.getChildren().addAll(taChat,fpChatSend,tfChatInput, btnLeave, btnSend);
+      cPane.getChildren().addAll(taChat,fpChatSend,tfChatInput, btnLeave, btnSend, taList);
    
       // timer,currentWord,fpNext,taChat,fpChatSend, taList, btnLeave
       btnLeave.setLayoutX(510);
@@ -248,18 +248,16 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       btnSend.setPrefWidth(400);
       btnSend.setLayoutX(115);
       btnSend.setLayoutY(315);
-      taChat.setLayoutX(115);
+      taList.setLayoutX(475);
+      taList.setLayoutY(50);
+      taList.setPrefWidth(140);
+      taList.setPrefHeight(200);
+      taChat.setLayoutX(50);
       taChat.setLayoutY(50);
       tfChatInput.setLayoutX(115);
       tfChatInput.setLayoutY(270);
-    
+      tfChatInput.setPromptText("Type your guess...");
       taChat.setStyle("-fx-border-radius: 15px;");
-      
-      
-      
-      
-   
-      taList.setPrefWidth(250);
       taChat.setPrefWidth(400);
       taChat.setPrefHeight(200);
       timer.setPrefWidth(400);
@@ -277,9 +275,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
             }
         }
 });
-  
-      btnPlay.setOnAction(this);
-   
+      btnPlay.setOnAction(this);  
    }
    
    public void handle(ActionEvent evt) {
