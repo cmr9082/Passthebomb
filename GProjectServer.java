@@ -162,7 +162,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       for(ObjectOutputStream clientOutStream : clients) {
          //System.out.println("sending broadcast message ==");
          try {
-            clientOutStream.writeUTF(command);
+            clientOutStream.writeObject(command);
             clientOutStream.reset();
             clientOutStream.flush();
             Variables v = (Variables)data;
@@ -197,12 +197,14 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             taLog.appendText("Request received from " + socket2.getInetAddress().getHostName()+"\n");
          
             while(true) {
-               String command = ooi.readUTF();
+            
+            
+               String command = ooi.readObject().toString();
                
                switch(command) {
                               
                   case "JOIN":
-                     name = ooi.readUTF();
+                     name = ooi.readObject().toString();
                      taLog.appendText("Player " + name + " has Joined\n");
                      pack.playerlistAdd(name);                  
                      broadcastMessage("REFRESHLIST", pack);
@@ -218,7 +220,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      break;  
                      
                   case "SEND":
-                     guess = ooi.readUTF();
+                     guess = ooi.readObject().toString();
                      doValidate(guess);
                      packMsg.playerlistAdd(guess);
                      broadcastMessage("REFRESHMSG",packMsg);
@@ -243,6 +245,9 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          }  // try
          catch(IOException e) {
          
+         }catch(ClassNotFoundException e){
+         
+         
          }
         
        
@@ -264,7 +269,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    //     
    //     ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());  
    //     
-   //      oos.writeUTF("STARTTIMER");
+   //      oos.writeObject("STARTTIMER");
    //                      oos.flush();
    // 
    //     }catch(Exception e){
@@ -298,7 +303,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             // // broadcastMessage("MOVIES", pack);            
             try{
                for(ObjectOutputStream clientOutStream : clients) {               
-                  clientOutStream.writeUTF("MOVIES");
+                  clientOutStream.writeObject("MOVIES");
                   clientOutStream.reset();
                   clientOutStream.flush();               
                }            
@@ -316,41 +321,44 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          for(int i = 0; i < pack.getSize(); i++){
 
             //Iterate the promptSet and send to isolated client
-            
-            
+                       
             ObjectOutputStream turnPlayer = clients.get(i);
-            turnPlayer.writeUTF("YOURTURN");
+            turnPlayer.writeObject("YOURTURN");
             turnPlayer.reset();
             turnPlayer.flush();
             
             
             ObjectInputStream turnPlayer2 = client.get(i);
 
-            Variables v = (Variables)turnPlayer2.readObject();
-            System.out.println(v.playerListGet());
+            String currentWord = turnPlayer2.readObject().toString();
+            System.out.println(currentWord);
             
-        //     while(verify){
-//                
-//                   if(input.equals(currentWord)){
-//                      verify = false;
-//                      try{
-//                         for(ObjectOutputStream clientOutStream : clients) { 
-//                            clientOutStream.writeUTF("RESETWORD");
-//                            clientOutStream.reset();
-//                            clientOutStream.flush();
-//                         }
-//                      }catch(Exception e){}
-//                   }else{           
-//                      verify = true;                 
-//                   }               
-//       }   
+            String input = packMsg.getPlayerInput();
+            
+            while(verify){
+               
+                  if(input.equals(currentWord)){
+                     verify = false;
+                     try{
+                        for(ObjectOutputStream clientOutStream : clients) { 
+                           clientOutStream.writeObject("RESETWORD");
+                           clientOutStream.reset();
+                           clientOutStream.flush();
+                        }
+                     }catch(Exception e){}
+                  }else{       
+                  input = packMsg.getPlayerInput();
+                      System.out.println(input);
+                     verify = true;                 
+                  }               
+      }   
           
            
            //  answerListener(input,currentWord);
             
       }
             }catch(Exception e){
-           //  System.out.println(turnPlayer2.readUTF());
+           //  System.out.println(turnPlayer2.readObject());
             
          
             // String currentWord = pack.getCurrentWord();
@@ -368,7 +376,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       
       //Listen for correct answer
    
-     // pointCounter++;
+      pointCounter++;
       // }
       //send points
    }
@@ -415,7 +423,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             verify = false;
             try{
                for(ObjectOutputStream clientOutStream : clients) { 
-                  clientOutStream.writeUTF("RESETWORD");
+                  clientOutStream.writeObject("RESETWORD");
                   clientOutStream.reset();
                   clientOutStream.flush();
                }

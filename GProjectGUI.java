@@ -38,7 +38,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private Stage stage;       
    private Socket socket = null;
    private ObjectInputStream ooi = null;
-   private ObjectOutputStream oos = null;
+   private static ObjectOutputStream oos = null;
    private Prompts prompts = new Prompts();
    private Vector<String> promptSet = new Vector<String>();
    private Variables pack = new Variables();
@@ -343,9 +343,9 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          new ReceiveMsgThread().start();
          
          //Send the command to join
-         oos.writeUTF("JOIN");
+         oos.writeObject("JOIN");
          oos.flush();
-         oos.writeUTF(name);
+         oos.writeObject(name);
          oos.flush();
          
       }catch(Exception e){
@@ -358,7 +358,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private void doWord(String _word){
       String word = _word;
     try {      
-         oos.writeUTF(word);
+         oos.writeObject(word);
          oos.flush();
          
       }catch (Exception ex) {
@@ -370,9 +370,9 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
       try {      
          String chat = tfChatInput.getText();
-         oos.writeUTF("SEND");
+         oos.writeObject("SEND");
          oos.flush();
-         oos.writeUTF(chat);
+         oos.writeObject(chat);
          oos.flush();
          tfChatInput.setText("");
          
@@ -386,7 +386,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       try{
          taChat.setText("");
          tfWord.setText("");
-         oos.writeUTF("DISCONNECT");
+         oos.writeObject("DISCONNECT");
          oos.flush();     
          socket.close();
          stage.setScene(sceneStart);
@@ -437,9 +437,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
    //class to receieve new messages from the server
    class ReceiveMsgThread extends Thread {
-   
-  
-   
+
       public void run() {
       
          System.out.println("Client Thread Running");
@@ -461,7 +459,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
               
             //Loop to keep listening
             while(true) {
-               String command = ooi.readUTF();
+               String command = ooi.readObject().toString();
                   //it is a command
                System.out.println("Command received : " + command);
                switch(command) {
@@ -498,7 +496,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      String currentWord = getPrompt();
                      tfWord.setText(currentWord);
                      pack.setCurrentWord(currentWord);
-                     oos.writeObject(pack);
+                     oos.writeObject(currentWord);
                      oos.flush();
                      break;
                      
