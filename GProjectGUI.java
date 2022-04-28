@@ -498,7 +498,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      String currentWord = getPrompt();
                      tfWord.setText(currentWord);
                      pack.setCurrentWord(currentWord);
-                     oos.writeUTF(currentWord);
+                     oos.writeObject(pack);
                      oos.flush();
                      break;
                      

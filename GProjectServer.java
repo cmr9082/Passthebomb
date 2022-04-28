@@ -317,15 +317,17 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
 
             //Iterate the promptSet and send to isolated client
             
+            
             ObjectOutputStream turnPlayer = clients.get(i);
-            ObjectInputStream turnPlayer2 = client.get(i);
-       
             turnPlayer.writeUTF("YOURTURN");
             turnPlayer.reset();
             turnPlayer.flush();
+            
+            
+            ObjectInputStream turnPlayer2 = client.get(i);
 
-            String currentWord = turnPlayer2.readUTF();
-            System.out.println(currentWord);
+            Variables v = (Variables)turnPlayer2.readObject();
+            System.out.println(v.playerListGet());
             
         //     while(verify){
 //                
@@ -366,7 +368,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       
       //Listen for correct answer
    
-      pointCounter++;
+     // pointCounter++;
       // }
       //send points
    }
