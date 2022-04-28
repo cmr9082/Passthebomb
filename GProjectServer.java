@@ -163,7 +163,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          //System.out.println("sending broadcast message ==");
          try {
             clientOutStream.writeUTF(command);
-           
+            clientOutStream.reset();
+            clientOutStream.flush();
             Variables v = (Variables)data;
             //System.out.println("Sending player data " + v.toString());
             clientOutStream.writeObject(data);
@@ -228,12 +229,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      
                      break; 
                      
-                   
-                     
-                  default:
-                     taLog.appendText("ERROR: Unrecognized Command Recieved");
-                     
-                     break;
+                
                }  // end switch 
                
               
@@ -312,31 +308,22 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       //  while(timerOn){      
         try{    
          for(int i = 0; i < pack.getSize(); i++){
-         
-         
-            ObjectOutputStream turnPlayer = clients.get(i);
-                        // String input = packMsg.getPlayerInput();
+
             //Iterate the promptSet and send to isolated client
+            ObjectOutputStream turnPlayer = clients.get(i);
        
             turnPlayer.writeUTF("YOURTURN");
             turnPlayer.flush();
-            
-            
-            try{
-            
-            ObjectInputStream turnPlayer2 = client.get(1);
-            Variables var = (Variables)turnPlayer2.readObject();
+        
+            ObjectInputStream turnPlayer2 = client.get(i);
+          
             System.out.println("Hello world there");
-            System.out.println(var.toString());
-            
-            
-           }catch(Exception e){
-      
-      }
+            String input = packMsg.getPlayerInput();
+            String currentWord = turnPlayer2.readUTF();
+            answerListener(input,currentWord);
+               
       }
       
-            
-            
             }catch(Exception e){
            //  System.out.println(turnPlayer2.readUTF());
             
@@ -350,7 +337,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                     
             // System.out.println("Word: " + currentWord);
 //             System.out.println("Guess: "+ guess);            
-           //   answerListener(input,currentWord);
+           
          
          }
       
