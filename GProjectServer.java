@@ -31,10 +31,10 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    private Pane pLog = new Pane();
    private Pane pButtons = new Pane();
    private Socket clientSocket = null;
+   private boolean verify = true;
+   private String guess;
    
    Vector<ObjectOutputStream> clients = new Vector<ObjectOutputStream>();
-   Vector<ObjectOutputStream> team1 = new Vector<ObjectOutputStream>();
-   Vector<ObjectOutputStream> team2 = new Vector<ObjectOutputStream>();   
    
    //Game Components
    Prompts prompts = new Prompts();
@@ -135,12 +135,11 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       // Switch on its name
       switch(btn.getText()) {
          case "Start":
-          System.out.println("Hello World");
-          gameStart();
-          break;
-    
+            gameStart();
+            break;
+      
       }
-    }
+   }
 
    private void doServerStuff() {
       try {
@@ -174,43 +173,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          }
       }
    }
-   private void team1BroadcastMessage(String command, Object data) {
-      System.out.println("sending broadcast message : " + team1.size());  
-      for(ObjectOutputStream clientOutStream : team1) {
-         System.out.println("sending broadcast message ==");
-         try {
-            clientOutStream.writeUTF(command);
-            clientOutStream.flush();
-            Variables v = (Variables)data;
-            System.out.println("Sending player data " + v.toString());
-            clientOutStream.writeObject(data);
-            clientOutStream.reset();
-            clientOutStream.flush();
-         } catch(Exception ex)
-         {
-            ex.printStackTrace();
-         }
-      }
-   }
-   private void team2BroadcastMessage(String command, Object data) {
-      System.out.println("sending broadcast message : " + team2.size());  
-      for(ObjectOutputStream clientOutStream : team2) {
-         System.out.println("sending broadcast message ==");
-         try {
-            clientOutStream.writeUTF(command);
-            clientOutStream.flush();
-            Variables v = (Variables)data;
-            System.out.println("Sending player data " + v.toString());
-            clientOutStream.writeObject(data);
-            clientOutStream.reset();
-            clientOutStream.flush();
-         } catch(Exception ex)
-         {
-            ex.printStackTrace();
-         }
-      }
-   }
-   
+
          
    class ClientThread extends Thread {
       Socket socket2 = null;
@@ -238,6 +201,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                // String command = scn.nextLine();
                String command = ooi.readUTF();
                switch(command) {
+               
                   case "JOIN":
                      name = ooi.readUTF();
                      taLog.appendText("Player "+name+" has Joined\n");
@@ -247,18 +211,24 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      break;
                      
                   case "DISCONNECT":
+                  
                      taLog.appendText("Player "+name+" has left\n");
                      pack.playerlistRemove(name);
-                    
+                     
                      socket2.close();
                      broadcastMessage("REFRESHLIST",pack);
                      break;  
                      
                   case "SEND":
-                     String name2 = ooi.readUTF();
-                     packMsg.playerlistAdd(name2);
+                     System.out.println(verify + "");
+                    //  String name2 = ooi.readUTF();
+                     guess = ooi.readUTF();
+                     doValidate(guess);
+                     packMsg.playerlistAdd(guess);
                      broadcastMessage("REFRESHMSG",packMsg);
+                     System.out.println(verify + "");
                      break;
+                     
                   case "TIMER-END":
                      timerOn = false;
                      break;  
@@ -269,7 +239,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                }  // switch 
                
               
-
+            
             }  //while
             
             // pw.close();
@@ -284,29 +254,28 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
  
  
    public void gameStart(){
+            
+   
+   
+   
    //Setup
     //Get and set Array Category
-    String guess = "";
-    
-    try{
-    ServerSocket s1 = new ServerSocket();  
-    clientSocket = s1.accept();
-    
-    ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());  
-    
-     oos.writeUTF("STARTTIMER");
-                     oos.flush();
-
-    }catch(Exception e){
-      e.getMessage();
-    
-    }
-    
    
     
-    
-    
-    
+   //  try{
+   //     ServerSocket s1 = new ServerSocket();  
+   //     clientSocket = s1.accept();
+   //     
+   //     ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());  
+   //     
+   //      oos.writeUTF("STARTTIMER");
+   //                      oos.flush();
+   // 
+   //     }catch(Exception e){
+   //       e.getMessage();
+   //     
+   //     }
+   
       taLog.appendText("Game Started!\n");
       
    
@@ -330,57 +299,121 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             promptSet = prompts.getVideoGames();
             break;
          case "Movies":
-            broadcastMessage("PACK-MOVIES",pack);
+            // // broadcastMessage("MOVIES", pack);
+            
+            try{
+               for(ObjectOutputStream clientOutStream : clients) {
+               
+                  clientOutStream.writeUTF("MOVIES");
+                  clientOutStream.reset();
+                  clientOutStream.flush();
+               
+               }
+            
+            }catch(Exception e){
+            
+            
+            }
+            
             break;
       }
-    //Shuffle Players and set Teams
-    /*
-      for(int i = 0;i<clients.size();i++){
-         if((clients.indexOf(clients.get(i)))%2==0){
-            team1.add(clients.get(i));
-         }else{
-            team2.add(clients.get(i));
-         }
-      }
-      taLog.appendText("Team 1: ");
-      for(int i = 0;i<team1.size();i++){
-         taLog.appendText(team1.get(i)+",");
-      }   
-      taLog.appendText("\nTeam 2: ");
-      for(int i = 0;i<team2.size();i++){
-      
-      }
-      team1BroadcastMessage("TEAM1SET",pack);     
-      team2BroadcastMessage("TEAM2SET",pack);
-      broadcastMessage("REFRESHLIST",pack);*/
-    //Randomize and set up timer
-    
+       
     
     
    //Gameplay
       
       //Isolate a player/ give them the turn
-      while(timerOn){
+      
+     //  while(timerOn){
       for(int i = 0;i<clients.size();i++){
-      try{ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
-      //Iterate the promptSet and send to isolated client
-      ObjectOutputStream turnPlayer = clients.get(i);
-      try{
-      turnPlayer.writeUTF("YOUR-TURN");
-      turnPlayer.flush();
-      }catch(Exception e){}
-      //Listen for correct answer
-      while(guess != pack.getCurrentWord()){
-         guess = ois.readUTF();  
-      }
+         
+            //Iterate the promptSet and send to isolated client
+         ObjectOutputStream turnPlayer = clients.get(i);
+         
+         try{
+            ServerSocket sSocket = new ServerSocket(45549);
+         
+            Socket socket1 = sSocket.accept();
+            ObjectInputStream ooi = new ObjectInputStream(socket1.getInputStream()); 
+            turnPlayer.writeUTF("YOUR-TURN");
+            turnPlayer.flush();
+          
+            
+            while(true) {
+               // String command = scn.nextLine();
+               String command = ooi.readUTF();
+               switch(command) {
+               
+                  case "SEND":
+                     String guess1 = ooi.readUTF();
+                  
+                     break;
+               
+               }
+              
+            
+            }
+         
+                   
+         
+            
+                  
+         }catch(Exception e){}
+            //Listen for correct answer
+       
+            
+       
+          
+        
+      }  
       
-      }catch(Exception e){}
-      
-      
-      }
       pointCounter++;
-      }
+      // }
+     
       //send points
+   }
+   
+   public void doValidate(String _command){
+   
+      String input = _command;
+      System.out.println(input);  
+   
+      try{
+         ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
+         ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+      
+         while(verify){
+         
+            if(input.equals(pack.getCurrentWord())){
+                 
+               verify = false;
+               System.out.println(guess);
+               
+            }else{
+               
+               System.out.println(pack.getCurrentWord());
+               verify = true;                 
+            }
+               
+         }
+      
+        //  if(input.equals(pack.getCurrentWord())){
+//             System.out.println("Verified");
+//             verify = false;
+//            //  wrongAnswer.setStyle("-fx-color: red;"); 
+//          }else{
+//             System.out.println("Not Verified");
+//             verify = true;  
+//          }
+      
+      }catch(Exception e){
+         e.getMessage();      
+      } 
+   }
+   
+   public void getGuess(){
+      
+   
    }
 }
 

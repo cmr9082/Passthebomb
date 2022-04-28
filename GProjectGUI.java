@@ -405,6 +405,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
    private void doLeave(){
       try{
+         taChat.setText("");
          oos.writeUTF("DISCONNECT");
          oos.flush();     
          socket.close();
@@ -459,8 +460,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          
          String message = "";
          try {
-         
-         
+
             //Loop to keep listening
             while(true) {
                String command = ooi.readUTF();
@@ -494,29 +494,20 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                         timeline.play();
                         break;
 
-                  case "TEAM1SET":
-                     onTeam1 = true;
-                     break;
-                  case "TEAM2SET":
-                     onTeam2 = true;
-                     break;                        
-                  case "PACK-MOVIES":
+                                        
+                  case "MOVIES":
+                     System.out.println("Hello World");
+                     // Variables var2 = (Variables)ooi.readObject();
                      promptSet = prompts.getMovies();
+                     
                      break;
                   case "YOUR-TURN":
+                     System.out.println("Hello World");
                      tfWord.setText(getPrompt());
-                     System.out.println(""+promptSet.size());
+                     System.out.println("" + promptSet.size());
                      break;
                          
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
-                         
+   
                   default:
                      System.out.println("Invalid command: " + command);
                }
