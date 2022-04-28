@@ -157,14 +157,14 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    }
 
    private void broadcastMessage(String command, Object data) {
-      System.out.println("sending broadcast message : " + clients.size());  
+      //System.out.println("sending broadcast message : " + clients.size());  
       for(ObjectOutputStream clientOutStream : clients) {
-         System.out.println("sending broadcast message ==");
+         //System.out.println("sending broadcast message ==");
          try {
             clientOutStream.writeUTF(command);
             clientOutStream.flush();
             Variables v = (Variables)data;
-            System.out.println("Sending player data " + v.toString());
+            //System.out.println("Sending player data " + v.toString());
             clientOutStream.writeObject(data);
             clientOutStream.reset();
             clientOutStream.flush();
@@ -344,10 +344,10 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             Socket socket = ss.accept();
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
          
-            String currentWord = in.readUTF();
-               System.out.println(currentWord);
+            String currentWord = getCurrentWord();
+            System.out.println(currentWord+"");
             while(verify){
-            
+               
                if(input.equals(currentWord)){
                
                   verify = false;
@@ -425,6 +425,12 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          e.getMessage();      
       } 
    }
+   
+   public String getCurrentWord(){
+   String currentWord = pack.getCurrentWord();
+      return currentWord;
+   }
+   
    
 }
 
