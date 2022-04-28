@@ -442,7 +442,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      System.out.println("Processing command: " + command);
                      Variables var = (Variables)ooi.readObject();
                      System.out.println("received data of size " + var.playerListGet().size());
-                     // refreshList(var);
+                     refreshList(var);
                      break;
                       
                   case "REFRESHMSG":                    

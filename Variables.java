@@ -28,6 +28,12 @@ public class Variables implements Serializable{
          return playerList;
          
    }
+   
+   public String getPlayerInput(){             
+            return playerList.lastElement();
+          }    
+   
+   
    //PromptSet interactions
    public Vector<String> getPromptSet(){
          return promptSet;         

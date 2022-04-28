@@ -198,7 +198,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                switch(command) {               
                   case "JOIN":
                      name = ooi.readUTF();
-                     taLog.appendText("Player "+name+" has Joined\n");
+                     taLog.appendText("Player " + name + " has Joined\n");
                      pack.playerlistAdd(name);                  
                      broadcastMessage("REFRESHLIST", pack);
                   
@@ -214,7 +214,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      
                   case "SEND":
                      guess = ooi.readUTF();
-                     // doValidate(guess);
+                     doValidate(guess);
                      packMsg.playerlistAdd(guess);
                      broadcastMessage("REFRESHMSG",packMsg);
                   
@@ -306,8 +306,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             ObjectOutputStream turnPlayer = clients.get(i);
             turnPlayer.writeUTF("YOURTURN");
             turnPlayer.flush();
-            System.out.println(packMsg.playerListGet());
-
+           
             String currentWord = getCurrentWord();            
             // System.out.println("Word: " + currentWord);
 //             System.out.println("Guess: "+ guess);            
