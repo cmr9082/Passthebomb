@@ -37,6 +37,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    
    //Vector for holding clients
    Vector<ObjectOutputStream> clients = new Vector<ObjectOutputStream>();
+   Vector<ObjectInputStream> client = new Vector<ObjectInputStream>();
    
    //Game Components
    Prompts prompts = new Prompts();
@@ -47,6 +48,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    //Sending Variables
    Variables pack = new Variables();
    Variables packMsg = new Variables();
+   Variables packCurrent = new Variables();
    String name = "";
    double width = 300;
    double height = 300;
@@ -223,7 +225,9 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                   case "TIMER-END":
                      timerOn = false;
                      
-                     break;  
+                     break; 
+                     
+                   
                      
                   default:
                      taLog.appendText("ERROR: Unrecognized Command Recieved");
@@ -239,7 +243,13 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          catch(Exception e) {
          
          }
-      }  // run
+        
+       
+    
+     
+        
+      
+      } // run
    }
  
    //Method for Starting the game
@@ -304,14 +314,19 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             String input = packMsg.getPlayerInput();
             //Iterate the promptSet and send to isolated client
             ObjectOutputStream turnPlayer = clients.get(i);
+            ObjectInputStream turnPlayer2 = client.get(i);
             turnPlayer.writeUTF("YOURTURN");
             turnPlayer.flush();
-            String currentWord = pack.getCurrentWord();
+            String currentWord = turnPlayer2.readUTF();
+            
+         
+            // String currentWord = pack.getCurrentWord();
            
 //             String currentWord = getCurrentWord();
             
             System.out.println(input);  
-            System.out.println(currentWord);        
+            System.out.println(currentWord);
+                    
             // System.out.println("Word: " + currentWord);
 //             System.out.println("Guess: "+ guess);            
            //  answerListener(input,currentWord);
@@ -375,7 +390,9 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             verify = true;                 
          }               
       }     
-   }   
+   }
+   
+ 
 }
 
       

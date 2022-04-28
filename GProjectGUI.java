@@ -42,6 +42,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private Prompts prompts = new Prompts();
    private Vector<String> promptSet = new Vector<String>();
    private Variables pack = new Variables();
+   private Variables packCurrent = new Variables();
    private Vector<String> localList = null;
    private Vector<String> localMsg = null; 
    
@@ -354,6 +355,17 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    }
    
    //Method to send the User input to the server then to the rest of the clients
+   private void doWord(String _word){
+      String word = _word;
+    try {      
+         oos.writeUTF(word);
+         oos.flush();
+         
+      }catch (Exception ex) {
+         ex.printStackTrace();
+      }
+
+   }
    private void doSend() {
    
       try {      
@@ -393,6 +405,19 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       for(int i = 0;i< playerList.size();i++){
          System.out.println("Adding ==> " + playerList.get(i));
          taChat.appendText(playerList.get(i)+"\n");
+      }
+   }
+   
+   //Method to refresh the Chat box to load any new messages
+   private void refreshWord(Variables var) {
+   
+      //Loop through the variables to update the list
+      Vector<String> playerList = var.playerListGet();
+      localList = playerList;
+
+      for(int i = 0;i< playerList.size();i++){
+         System.out.println("Adding ==> " + playerList.get(i));
+        
       }
    }
    
@@ -452,6 +477,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      refreshMsg(var2);
                      break;
                      
+                     
                   case "STARTTIMER":
                      timeline.setCycleCount(Animation.INDEFINITE);
                      timeline.play();
@@ -468,7 +494,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      String currentWord = getPrompt();
                      tfWord.setText(currentWord);
                      pack.setCurrentWord(currentWord);
-                     
+                     doWord(currentWord);
                      break;
                      
                   case "RESETWORD":
