@@ -197,7 +197,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             while(true) {
                String command = ooi.readUTF();
                
-               switch(command) {               
+               switch(command) {
+                              
                   case "JOIN":
                      name = ooi.readUTF();
                      taLog.appendText("Player " + name + " has Joined\n");
@@ -308,33 +309,51 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       }
      
       //Isolate a player/ give them the turn
-      try{//  while(timerOn){      
-      
-         for(int i = 0; i < clients.size();i++){
-            String input = packMsg.getPlayerInput();
-            //Iterate the promptSet and send to isolated client
+      //  while(timerOn){      
+        try{    
+         for(int i = 0; i < pack.getSize(); i++){
+         
+         
             ObjectOutputStream turnPlayer = clients.get(i);
-            ObjectInputStream turnPlayer2 = client.get(i);
+                        // String input = packMsg.getPlayerInput();
+            //Iterate the promptSet and send to isolated client
+       
             turnPlayer.writeUTF("YOURTURN");
             turnPlayer.flush();
-            String currentWord = turnPlayer2.readUTF();
+            
+            
+            try{
+            
+            ObjectInputStream turnPlayer2 = client.get(1);
+            Variables var = (Variables)turnPlayer2.readObject();
+            System.out.println("Hello world there");
+            System.out.println(var.toString());
+            
+            
+           }catch(Exception e){
+      
+      }
+      }
+      
+            
+            
+            }catch(Exception e){
+           //  System.out.println(turnPlayer2.readUTF());
             
          
             // String currentWord = pack.getCurrentWord();
            
 //             String currentWord = getCurrentWord();
             
-            System.out.println(input);  
-            System.out.println(currentWord);
+            // System.out.println(input);  
+          
                     
             // System.out.println("Word: " + currentWord);
 //             System.out.println("Guess: "+ guess);            
-           //  answerListener(input,currentWord);
+           //   answerListener(input,currentWord);
          
          }
-      }catch(Exception e){
       
-      }
       //Listen for correct answer
    
       pointCounter++;

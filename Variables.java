@@ -29,6 +29,11 @@ public class Variables implements Serializable{
          
    }
    
+   public int getSize(){
+      return playerList.size();
+   
+   }
+   
    public String getPlayerInput(){             
       return playerList.lastElement();
    }    
