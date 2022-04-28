@@ -193,6 +193,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             ooi = new ObjectInputStream(socket2.getInputStream());
             oos = new ObjectOutputStream(socket2.getOutputStream());
             clients.add(oos);
+            client.add(ooi);
             taLog.appendText("Request received from " + socket2.getInetAddress().getHostName()+"\n");
          
             while(true) {
@@ -309,25 +310,43 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
      
       //Isolate a player/ give them the turn
       //  while(timerOn){      
-        try{    
+        try{  
+      
+        
          for(int i = 0; i < pack.getSize(); i++){
 
             //Iterate the promptSet and send to isolated client
+            
             ObjectOutputStream turnPlayer = clients.get(i);
+            ObjectInputStream turnPlayer2 = client.get(i);
        
             turnPlayer.writeUTF("YOURTURN");
             turnPlayer.reset();
             turnPlayer.flush();
-                        
-            ObjectInputStream turnPlayer2 = client.get(i);
-            System.out.println("Hello world there");
-            String input = packMsg.getPlayerInput();
+
             String currentWord = turnPlayer2.readUTF();
-            answerListener(input,currentWord);
+            System.out.println(currentWord);
+            
+        //     while(verify){
+//                
+//                   if(input.equals(currentWord)){
+//                      verify = false;
+//                      try{
+//                         for(ObjectOutputStream clientOutStream : clients) { 
+//                            clientOutStream.writeUTF("RESETWORD");
+//                            clientOutStream.reset();
+//                            clientOutStream.flush();
+//                         }
+//                      }catch(Exception e){}
+//                   }else{           
+//                      verify = true;                 
+//                   }               
+//       }   
+          
+           
+           //  answerListener(input,currentWord);
             
       }
-    
-      
             }catch(Exception e){
            //  System.out.println(turnPlayer2.readUTF());
             
@@ -382,8 +401,11 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    
    //Method to listen for the answer
    public void answerListener(String _input, String _currentWord){
+   
+   System.out.println("Hello there");
       String input = _input;
       String currentWord = _currentWord;
+     
       
       while(verify){
                

@@ -500,7 +500,6 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      pack.setCurrentWord(currentWord);
                      oos.writeUTF(currentWord);
                      oos.flush();
-                     System.out.println("TEst");
                      break;
                      
                   case "RESETWORD":
