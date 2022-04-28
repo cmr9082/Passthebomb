@@ -312,7 +312,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       taList.setEditable(false);
       taChat.setEditable(false);
       btnLeave.setOnAction(this);
-      // btnNext.setOnAction(this);
+      btnNext.setOnAction(this);
       btnSend.setOnAction(this);
       btnSend.setOnKeyPressed(new EventHandler<KeyEvent>() {
         @Override
@@ -501,10 +501,16 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      promptSet = prompts.getMovies();
                      
                      break;
-                  case "YOUR-TURN":
-                     System.out.println("Hello World");
-                     tfWord.setText(getPrompt());
+                  case "YOURTURN":
+                     String currentWord = getPrompt();
+                     tfWord.setText(currentWord);
                      System.out.println("" + promptSet.size());
+                     oos.writeUTF(currentWord);
+                     oos.flush();
+                     break;
+                     
+                  case "RESETWORD":
+                     tfWord.setText("");
                      break;
                          
    
@@ -523,6 +529,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
  public String getPrompt(){
    Collections.shuffle(promptSet);
    pack.setCurrentWord(promptSet.get(0));
+   System.out.println(pack.currentWord + "");
    return promptSet.get(0);
  }
 }

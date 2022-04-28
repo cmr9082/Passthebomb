@@ -33,6 +33,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    private Socket clientSocket = null;
    private boolean verify = true;
    private String guess;
+   private String input;
    
    Vector<ObjectOutputStream> clients = new Vector<ObjectOutputStream>();
    
@@ -220,13 +221,13 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      break;  
                      
                   case "SEND":
-                     System.out.println(verify + "");
+                    
                     //  String name2 = ooi.readUTF();
                      guess = ooi.readUTF();
                      doValidate(guess);
                      packMsg.playerlistAdd(guess);
                      broadcastMessage("REFRESHMSG",packMsg);
-                     System.out.println(verify + "");
+                  
                      break;
                      
                   case "TIMER-END":
@@ -324,48 +325,76 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       
       //Isolate a player/ give them the turn
       
-     //  while(timerOn){
-      for(int i = 0;i<clients.size();i++){
+      try{//  while(timerOn){
+      
+         for(int i = 0; i < clients.size();i++){
          
             //Iterate the promptSet and send to isolated client
-         ObjectOutputStream turnPlayer = clients.get(i);
          
-         try{
-            ServerSocket sSocket = new ServerSocket(45549);
          
-            Socket socket1 = sSocket.accept();
-            ObjectInputStream ooi = new ObjectInputStream(socket1.getInputStream()); 
-            turnPlayer.writeUTF("YOUR-TURN");
+         
+         
+         
+         
+            ObjectOutputStream turnPlayer = clients.get(i);
+            turnPlayer.writeUTF("YOURTURN");
             turnPlayer.flush();
-          
+         
+            ServerSocket ss = new ServerSocket(45549);
+            Socket socket = ss.accept();
+            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+         
+            String currentWord = in.readUTF();
+               System.out.println(currentWord);
+            while(verify){
             
-            while(true) {
-               // String command = scn.nextLine();
-               String command = ooi.readUTF();
-               switch(command) {
+               if(input.equals(currentWord)){
                
-                  case "SEND":
-                     String guess1 = ooi.readUTF();
+                  verify = false;
+                  try{
+                     for(ObjectOutputStream clientOutStream : clients) {
+                     
+                        clientOutStream.writeUTF("RESETWORD");
+                        clientOutStream.reset();
+                        clientOutStream.flush();
+                     
+                     }
+                        
+                     
+                  }catch(Exception e){
                   
-                     break;
+                  
+                  }
                
+               
+               
+               }else{
+           
+                  verify = true;                 
                }
-              
-            
-            }
-         
-                   
-         
-            
-                  
-         }catch(Exception e){}
+               
+            }           
+         //  
+         //             
+         //             while(true) {
+         //                // String command = scn.nextLine();
+         //                String command = ooi.readUTF();
+         //                switch(command) {
+         //                
+         //                   case "SEND":
+         //                      String guess1 = ooi.readUTF();
+         //                   
+         //                      break;
+         //                
+         //                }
+         //               
+         //             
+         //             }
+         }
+      }catch(Exception e){}
             //Listen for correct answer
-       
-            
-       
-          
+   
         
-      }  
       
       pointCounter++;
       // }
@@ -375,46 +404,28 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    
    public void doValidate(String _command){
    
-      String input = _command;
+      input = _command;
       System.out.println(input);  
    
       try{
          ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
          ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
       
-         while(verify){
-         
-            if(input.equals(pack.getCurrentWord())){
-                 
-               verify = false;
-               System.out.println(guess);
-               
-            }else{
-               
-               System.out.println(pack.getCurrentWord());
-               verify = true;                 
-            }
-               
-         }
       
-        //  if(input.equals(pack.getCurrentWord())){
-//             System.out.println("Verified");
-//             verify = false;
-//            //  wrongAnswer.setStyle("-fx-color: red;"); 
-//          }else{
-//             System.out.println("Not Verified");
-//             verify = true;  
-//          }
+         if(input.equals(pack.getCurrentWord())){
+            System.out.println("Verified");
+            verify = false;
+           //  wrongAnswer.setStyle("-fx-color: red;"); 
+         }else{
+            System.out.println("Not Verified");
+            verify = true;  
+         }
       
       }catch(Exception e){
          e.getMessage();      
       } 
    }
    
-   public void getGuess(){
-      
-   
-   }
 }
 
       
