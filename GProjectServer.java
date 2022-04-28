@@ -227,7 +227,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                   
                      break;
                      
-                  case "TIMER-END":
+                  case "STOPTIMER":
                      timerOn = false;
                      
                      break; 
@@ -313,11 +313,22 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             }
             break;
       }
+       try{
+               for(ObjectOutputStream clientOutStream : clients) {               
+                  clientOutStream.writeObject("STARTTIMER");
+                  clientOutStream.reset();
+                  clientOutStream.flush();               
+               }            
+            }catch(Exception e){
+            
+            }
      
       //Isolate a player/ give them the turn
-      //  while(timerOn){      
-        try{  
+      //  while(timerOn){  
       
+        
+        try{  
+             while(timerOn){ 
         
          for(int i = 0; i < pack.getSize(); i++){
 
@@ -362,6 +373,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
            //  answerListener(input,currentWord);
             
       }
+            }
             }catch(Exception e){
            //  System.out.println(turnPlayer2.readObject());
             
@@ -377,11 +389,11 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
 //             System.out.println("Guess: "+ guess);            
            
          
-         }
       
+      }
       //Listen for correct answer
    
-      pointCounter++;
+    //   pointCounter++;
       // }
       //send points
    }
