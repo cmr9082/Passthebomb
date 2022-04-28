@@ -48,9 +48,10 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
    
    
-   //private Variables pack = new Variables();
+   private Variables pack = new Variables();
    private Vector<String> localList = null;
    private Vector<String> localMsg = null;
+   
    
    //Start Menu Initiations
    private Scene sceneStart;
@@ -504,6 +505,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      break;
                   case "YOUR-TURN":
                      tfWord.setText(getPrompt());
+                     System.out.println(""+promptSet.size());
                      break;
                          
                          
@@ -529,11 +531,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
  
  public String getPrompt(){
    Collections.shuffle(promptSet);
-   try{
-   oos.writeUTF(promptSet.get(1));
-   oos.flush();
-   }catch(Exception e){System.out.println("Somethings wrong with getPrompt");}
-   return promptSet.get(1);
+   pack.setCurrentWord(promptSet.get(0));
+   return promptSet.get(0);
  }
 }
 

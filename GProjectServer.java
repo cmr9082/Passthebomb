@@ -39,6 +39,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    //Game Components
    Prompts prompts = new Prompts();
    Vector<String> promptSet = null;
+   int pointCounter = 0;
+   boolean timerOn = true;
    
    
    //Sending Variables
@@ -87,7 +89,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       
       taLog.setPrefWidth(width);
       taLog.setPrefHeight(height);
-      cbCategory.getItems().addAll("Everyday Objects","Phrases","Activities","Brands","Video Games","Movies","Foods");
+      cbCategory.getItems().addAll("Movies","Everyday Objects","Phrases","Activities","Brands","Video Games","Movies","Foods");
       tfServer.setEditable(false);
       taLog.setEditable(false);
       taLog.setPrefHeight(225);
@@ -256,7 +258,9 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      String name2 = ooi.readUTF();
                      packMsg.playerlistAdd(name2);
                      broadcastMessage("REFRESHMSG",packMsg);
-                     
+                     break;
+                  case "TIMER-END":
+                     timerOn = false;
                      break;  
                      
                   default:
@@ -282,9 +286,10 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    public void gameStart(){
    //Setup
     //Get and set Array Category
+    String guess = "";
     
     try{
-     ServerSocket s1 = new ServerSocket();  
+    ServerSocket s1 = new ServerSocket();  
     clientSocket = s1.accept();
     
     ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());  
@@ -329,6 +334,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             break;
       }
     //Shuffle Players and set Teams
+    /*
       for(int i = 0;i<clients.size();i++){
          if((clients.indexOf(clients.get(i)))%2==0){
             team1.add(clients.get(i));
@@ -346,7 +352,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       }
       team1BroadcastMessage("TEAM1SET",pack);     
       team2BroadcastMessage("TEAM2SET",pack);
-      broadcastMessage("REFRESHLIST",pack);
+      broadcastMessage("REFRESHLIST",pack);*/
     //Randomize and set up timer
     
     
@@ -354,24 +360,27 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    //Gameplay
       
       //Isolate a player/ give them the turn
+      while(timerOn){
       for(int i = 0;i<clients.size();i++){
+      try{ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
       //Iterate the promptSet and send to isolated client
       ObjectOutputStream turnPlayer = clients.get(i);
       try{
       turnPlayer.writeUTF("YOUR-TURN");
       turnPlayer.flush();
-
       }catch(Exception e){}
-      //stop the other team from talking
       //Listen for correct answer
+      while(guess != pack.getCurrentWord()){
+         guess = ois.readUTF();  
+      }
       
-      //Upon correct answer bomb gets passed
-      //*repeat, but while happening when timer hits zero break the iteration
-      //allocate/update points
-      //checks if auto start is on if so waits a few seconds then recurses 
-      //otherwise stops
+      }catch(Exception e){}
+      
       
       }
+      pointCounter++;
+      }
+      //send points
    }
 }
 
