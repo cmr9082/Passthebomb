@@ -176,7 +176,6 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    //Class for the ClientThread      
    class ClientThread extends Thread {
       Socket socket2 = null;
-      Scanner scn = null;
       ObjectInputStream ooi = null;
       ObjectOutputStream oos = null; 
    
@@ -200,8 +199,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                   case "JOIN":
                      name = ooi.readUTF();
                      taLog.appendText("Player "+name+" has Joined\n");
-                     pack.playerlistAdd(name);
-                     broadcastMessage("REFRESHLIST",pack);
+                     pack.playerlistAdd(name);                  
+                     broadcastMessage("REFRESHLIST", pack);
                   
                      break;
                      
@@ -215,7 +214,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      
                   case "SEND":
                      guess = ooi.readUTF();
-                     doValidate(guess);
+                     // doValidate(guess);
                      packMsg.playerlistAdd(guess);
                      broadcastMessage("REFRESHMSG",packMsg);
                   
@@ -263,7 +262,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    //     }
    
       taLog.appendText("Game Started!\n");
-      
+
       //Switch for the different Category choices   
       switch(cbCategory.getValue().toString()){
          case "Everyday Object":
@@ -299,18 +298,20 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       }
      
       //Isolate a player/ give them the turn
-      
       try{//  while(timerOn){      
+      
          for(int i = 0; i < clients.size();i++){
          
             //Iterate the promptSet and send to isolated client
             ObjectOutputStream turnPlayer = clients.get(i);
             turnPlayer.writeUTF("YOURTURN");
             turnPlayer.flush();
+            System.out.println(packMsg.playerListGet());
+
             String currentWord = getCurrentWord();            
-            System.out.println("Word: " + currentWord);
-            System.out.println("Guess: "+guess);            
-            answerListener(input,currentWord);
+            // System.out.println("Word: " + currentWord);
+//             System.out.println("Guess: "+ guess);            
+           //  answerListener(input,currentWord);
          
          }
       }catch(Exception e){
@@ -355,6 +356,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    public void answerListener(String _input, String _currentWord){
       String input = _input;
       String currentWord = _currentWord;
+      
       while(verify){
                
          if(input.equals(currentWord)){

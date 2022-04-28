@@ -386,7 +386,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private void refreshMsg(Variables var) {
    
       //Loop through the variables to update the list
-      Vector<String> playerList = var.playerlistGet();
+      Vector<String> playerList = var.playerListGet();
       localList = playerList;
       taChat.setText("");
       
@@ -400,11 +400,11 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private void refreshList(Variables var) {
    
       //Loop through the variables to update the list
-      Vector<String> playerList = var.playerlistGet();
+      Vector<String> playerList = var.playerListGet();
       localList = playerList;
       taList.setText("");
       
-      for(int i = 0;i< playerList.size();i++){
+      for(int i = 0 ; i< playerList.size();i++){
          System.out.println("Adding ==> " + playerList.get(i));
          taList.appendText(playerList.get(i)+"\n");
       }
@@ -441,14 +441,14 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                         //Server is sending var object. readit.
                      System.out.println("Processing command: " + command);
                      Variables var = (Variables)ooi.readObject();
-                     System.out.println("received data of size " + var.playerlistGet().size());
-                     refreshList(var);
+                     System.out.println("received data of size " + var.playerListGet().size());
+                     // refreshList(var);
                      break;
                       
                   case "REFRESHMSG":                    
                      System.out.println("Processing command: " + command);
                      Variables var2 = (Variables)ooi.readObject();
-                     System.out.println("received data of size " + var2.playerlistGet().size());
+                     System.out.println("received data of size " + var2.playerListGet().size());
                      refreshMsg(var2);
                      break;
                      

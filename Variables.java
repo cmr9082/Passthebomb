@@ -6,15 +6,12 @@ public class Variables implements Serializable{
    Vector<String> promptSet;
    Vector<String> playerList;
    String currentWord;
-   int team1Points;
-   int team2Points;
    
    public Variables(){
     playerList = new Vector<String>();
     promptSet = new Vector<String>();
     currentWord = "";
-    team1Points = 0;
-    team2Points = 0;
+
    }
    
    
@@ -27,7 +24,7 @@ public class Variables implements Serializable{
       playerList.remove(playerList.indexOf(_string));
    }
    
-   public Vector<String> playerlistGet(){
+   public Vector<String> playerListGet(){
          return playerList;
          
    }
@@ -38,15 +35,7 @@ public class Variables implements Serializable{
    public void setPromptSet(Vector<String> ps){
          promptSet = ps;
    }
-   
-   //Points Interaction
-   public void team1Inc(){team1Points++;}
-   public void team1Dec(){team1Points--;}
-   public void team2Inc(){team2Points++;}
-   public void team2Dec(){team2Points--;}
-   public int team1PointGet(){return team1Points;}
-   public int team2PointGet(){return team2Points;}
-   
+
    //currentWord Interactions
    public String getCurrentWord(){return currentWord;}
    public void setCurrentWord(String _string){currentWord = _string;}
