@@ -8,10 +8,10 @@ public class Variables implements Serializable{
    String currentWord;
    
    public Variables(){
-    playerList = new Vector<String>();
-    promptSet = new Vector<String>();
-    currentWord = "";
-
+      playerList = new Vector<String>();
+      promptSet = new Vector<String>();
+      currentWord = "";
+   
    }
    
    
@@ -25,26 +25,30 @@ public class Variables implements Serializable{
    }
    
    public Vector<String> playerListGet(){
-         return playerList;
+      return playerList;
          
    }
    
    public String getPlayerInput(){             
-            return playerList.lastElement();
-          }    
+      return playerList.lastElement();
+   }    
    
    
    //PromptSet interactions
    public Vector<String> getPromptSet(){
-         return promptSet;         
+      return promptSet;         
    }
    public void setPromptSet(Vector<String> ps){
-         promptSet = ps;
+      promptSet = ps;
    }
 
    //currentWord Interactions
-   public String getCurrentWord(){return currentWord;}
-   public void setCurrentWord(String _string){currentWord = _string;}
+   public String getCurrentWord(){
+      return playerList.lastElement();
+   }
+   public void setCurrentWord(String _string){
+      currentWord = _string;
+   }
    
    
    

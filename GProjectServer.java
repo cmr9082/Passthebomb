@@ -161,7 +161,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          //System.out.println("sending broadcast message ==");
          try {
             clientOutStream.writeUTF(command);
-            clientOutStream.flush();
+           
             Variables v = (Variables)data;
             //System.out.println("Sending player data " + v.toString());
             clientOutStream.writeObject(data);
@@ -301,13 +301,17 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       try{//  while(timerOn){      
       
          for(int i = 0; i < clients.size();i++){
-         
+            String input = packMsg.getPlayerInput();
             //Iterate the promptSet and send to isolated client
             ObjectOutputStream turnPlayer = clients.get(i);
             turnPlayer.writeUTF("YOURTURN");
             turnPlayer.flush();
+            String currentWord = pack.getCurrentWord();
            
-            String currentWord = getCurrentWord();            
+//             String currentWord = getCurrentWord();
+            
+            System.out.println(input);  
+            System.out.println(currentWord);        
             // System.out.println("Word: " + currentWord);
 //             System.out.println("Guess: "+ guess);            
            //  answerListener(input,currentWord);
