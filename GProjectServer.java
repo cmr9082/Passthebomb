@@ -229,15 +229,20 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      
                      break; 
                      
+                  default:
+                      ooi.close();
+                  break;
+                     
                 
                }  // end switch 
                
               
-            
+          
             }  //end while
+             
             //socket2.close();
          }  // try
-         catch(Exception e) {
+         catch(IOException e) {
          
          }
         
@@ -311,18 +316,18 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
 
             //Iterate the promptSet and send to isolated client
             ObjectOutputStream turnPlayer = clients.get(i);
+          
        
             turnPlayer.writeUTF("YOURTURN");
             turnPlayer.flush();
-        
-            ObjectInputStream turnPlayer2 = client.get(i);
-          
+          ObjectInputStream turnPlayer2 = client.get(i);
             System.out.println("Hello world there");
             String input = packMsg.getPlayerInput();
             String currentWord = turnPlayer2.readUTF();
             answerListener(input,currentWord);
-               
+            turnPlayer2.close(); 
       }
+    
       
             }catch(Exception e){
            //  System.out.println(turnPlayer2.readUTF());
