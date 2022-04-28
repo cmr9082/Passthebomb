@@ -33,75 +33,58 @@ import javafx.scene.input.KeyEvent;
  */
 
 public class GProjectGUI extends Application implements EventHandler<ActionEvent> {
+
    //General Declarations
    private Stage stage;       
    private Socket socket = null;
-   private PrintWriter pw = null;
-   private Scanner scn = null;
    private ObjectInputStream ooi = null;
    private ObjectOutputStream oos = null;
-   private boolean onTeam1 = false;
-   private boolean onTeam2 = false;
    private Prompts prompts = new Prompts();
    private Vector<String> promptSet = new Vector<String>();
-   
-   
-   
-   
    private Variables pack = new Variables();
    private Vector<String> localList = null;
-   private Vector<String> localMsg = null;
-   
+   private Vector<String> localMsg = null; 
    
    //Start Menu Initiations
    private Scene sceneStart;
    private VBox rootStart = new VBox(8);
-   private FlowPane fpMenu0 = new FlowPane(10,10);
    private Pane fpMenu1 = new Pane();
    private Pane fpMenu2 = new Pane();
    private Pane fpMenu3 = new Pane();
-   private Button btnHTP = new Button("How to Play");
-   private Button btnPlay = new Button("Play");
-   private Button btnJoin = new Button("Join");
    private Image title = new Image("/startBomb.png",true);
    private ImageView titleView = new ImageView(title);
    
+   //Buttons
+   private Button btnHTP = new Button("How to Play");
+   private Button btnPlay = new Button("Play");
+   private Button btnJoin = new Button("Join");
+   private Button btnEnter = new Button("Enter");
+   private Button btnNext = new Button("Next"); 
+   private Button btnSend = new Button("Send");
+   private Button btnRelinquish = new Button("Relinquish Host");
+   private Button btnLeave = new Button("Leave");
+   
    //Input Scene
-
    private TextInputDialog tidName = new TextInputDialog();
    private TextInputDialog tidIP = new TextInputDialog();  
    private TextField tfIP = new TextField();
-   private TextField tfName = new TextField();
-   private Button btnEnter = new Button("Enter"); 
+   private TextField tfName = new TextField();   
    
-   
-   //Game Menu Intiations
-   
+   //Scene for actual game   
    private Scene sceneGame;   
    private FlowPane rootGame = new FlowPane(10,10);
    private VBox vbGame1 = new VBox(8);
    private VBox vbGame2 = new VBox(8);
    private FlowPane fpChatSend = new FlowPane(5,5);
-   private FlowPane fpNext = new FlowPane(5,5);
-   
+   private FlowPane fpNext = new FlowPane(5,5);   
    private ProgressBar timer = new ProgressBar();
    private IntegerProperty seconds = new SimpleIntegerProperty();
-   
-
    private TextField tfWord = new TextField("Your Prompt Word...");
-   private Button btnNext = new Button("Next");
    private TextArea taChat = new TextArea();
    private TextField tfChatInput = new TextField();
-   private Button btnSend = new Button("Send");
-   private Pane cPane = new Pane();
-   
-   
+   private Pane cPane = new Pane(); 
    private TextArea taList = new TextArea("Player List:");
-   private TextField tfT1Points = new TextField("Team 1: ");
-   private TextField tfT2Points = new TextField("Team 2: ");
-   private Button btnLeave = new Button("Leave");
    private ComboBox cbCategory = new ComboBox();
-   private Button btnRelinquish = new Button("Relinquish Host");
    private Label lblHost = new Label("Host Controls:");
    
    // Main just instantiates an instance of this GUI class
@@ -111,10 +94,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
    // Called automatically after launch sets up javaFX
    public void start(Stage _stage) throws Exception {
-      //Initial Setups
    
-      
-      
+      //Initial Setups
       stage = _stage;    
       stage. setResizable(false);
       rootStart.setId("pane");                  
@@ -122,22 +103,15 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       sceneStart = new Scene(rootStart, 500, 350);
       rootStart.setStyle("-fx-background-image: url(/startBomb.png); -fx-background-repeat: no-repeat; -fx-background-size: 500 350; -fx-background-position: center center;");
       
-  
+      //Get the bomb image for the GUI
       FileInputStream stream = new FileInputStream("bomb.png");
-      Image image  = new Image(stream);
-      
+      Image image  = new Image(stream);      
       ImageView imageView = new ImageView(image);
       sceneGame = new Scene(rootGame, 700, 600); 
-                              
+       
+      //Set and show the stage                       
       stage.setScene(sceneStart);                 
       stage.show();   
-   
-   
-      //Setting Up Start Menu
-   //    titleView.setFitWidth(300);
-   //       titleView.setFitHeight(250);
-      
-   //       fpMenu1.setAlignment(Pos.CENTER);
    
       //Titles for the Start scene
       Text lblTitle = new Text();
@@ -147,8 +121,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       Text lblName = new Text();
       lblName.setText("Enter UserName:");
       
-      //Button Styles
-   
+      //Button Styles   
       btnJoin.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
       btnHTP.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff; -fx-padding: 0px; -fx-border-radius: 15px;" );
       btnEnter.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
@@ -156,8 +129,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       btnLeave.setStyle("-fx-background-color: #ECC402; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 15px;");
       btnSend.setStyle("-fx-background-color: #ECC402; -fx-text-fill: #ffffff; -fx-width: 400;  -fx-border-radius: 15px; -fx-padding: 15px;");
       btnNext.setStyle("-fx-background-color: #ECC402; -fx-text-fill: #ffffff; -fx-width: 100;  -fx-border-radius: 15px; -fx-padding: 5px;");
-
    
+      //Set the Font for Buttons and Labels
       lblTitle.setFont(Font.font ("Jockey One", 50));
       lblIP.setFont(Font.font ("Jockey One", 50));
       lblName.setFont(Font.font ("Jockey One", 43));
@@ -167,7 +140,10 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       btnHTP.setFont(Font.font ("Jockey One", 30));
       btnEnter.setFont(Font.font ("Jockey One", 30));
       btnJoin.setFont(Font.font ("Jockey One", 30));
-   
+      
+      //Set the Layout for all GUI components
+      
+      //Buttons
       btnLeave.setPrefHeight(40);
       btnPlay.setPrefWidth(75);
       btnPlay.setPrefHeight(50);
@@ -185,14 +161,16 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       btnJoin.setPrefHeight(50);
       btnJoin.setLayoutX(185);
       btnJoin.setLayoutY(200);
+      
+      //Labels
       lblTitle.setLayoutY(160);
       lblTitle.setLayoutX(125);
       lblIP.setLayoutY(145);
       lblIP.setLayoutX(165);
       lblName.setLayoutY(160);
-      lblName.setLayoutX(120);
-   
+      lblName.setLayoutX(120); 
       
+      //TextFields     
       TextField tfIP = tidIP.getEditor();
       tfIP.setPrefWidth(175);
       tfIP.setPrefHeight(20);
@@ -204,8 +182,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       tfName.setLayoutX(150);
       tfName.setLayoutY(165);
    
-      fpMenu0.getChildren().add(titleView);
-      fpMenu0.setAlignment(Pos.CENTER);
+      
       rootStart.getChildren().addAll(fpMenu1);
       tidName.setHeaderText("Enter Your Username");
       // tidName.setContentText("");
@@ -214,10 +191,13 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       tidIP.setGraphic(null);
       tidIP.setHeaderText(null);
       // tidIP.setContentText("");
+      
+      //Add GUI components to the Panes
       fpMenu1.getChildren().addAll(lblTitle, btnPlay,btnHTP);
       fpMenu2.getChildren().addAll(lblIP, btnEnter, tfIP);
       fpMenu3.getChildren().addAll(lblName, btnJoin, tfName);
       
+      //Create and Style the Dialogue Panes
       DialogPane dPane1 = tidIP.getDialogPane();
       dPane1.setStyle("-fx-background-image: url(/startBomb.png);-fx-background-size: 500 350;  -fx-background-repeat: no-repeat; -fx-background-position: center center;");
       dPane1.setPrefWidth(500);
@@ -235,32 +215,38 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       dPane2.setPrefHeight(350);
       dPane2.getChildren().add(fpMenu3);   
       
+      //Actions for the buttons
       btnEnter.setDefaultButton(true);
-      btnJoin.setDefaultButton(true);  
-   
+      btnJoin.setDefaultButton(true);    
       btnHTP.setOnAction(this);
       btnEnter.setOnAction(event -> tidIP.close());
       btnPlay.setOnAction(this);
       btnJoin.setOnAction(event -> tidName.close());
-     
-      //Setting Up Game Menu
-     
-   //       BorderPane border = new BorderPane();
-   //    //    border.getChildren().add(cPane);
-   //       border.setCenter(cPane);
-      rootGame.getChildren().addAll(cPane);
-   
-     
+      tfWord.setEditable(false);
+      taList.setEditable(false);
+      taChat.setEditable(false);
+      btnLeave.setOnAction(this);
+      btnNext.setOnAction(this);
+      btnSend.setOnAction(this);
+      btnSend.setOnKeyPressed(
+         new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent k) {
+               if (k.getCode().equals(KeyCode.ENTER)) {
+                  doSend();
+               }
+            }
+         });
+      
+      //Add the pane to the main game GUI
+      rootGame.getChildren().addAll(cPane);        
       rootGame.setStyle("-fx-background-color: #BA1009; -fx-border-width: 30px; -fx-border-color: #ECC402;");
-      cPane.setPrefSize(400, 400);
-   
+      cPane.setPrefSize(400, 400);   
       cPane.relocate(100, 100);
-   
-    
-     
-      cPane.getChildren().addAll(taChat,timer,tfWord,btnNext,  imageView, fpChatSend,tfChatInput, btnLeave, btnSend, taList, tfT1Points, tfT2Points);
-      timer.setStyle("-fx-accent: #BA1009; -fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
-      // timer,tfWord,fpNext,taChat,fpChatSend, taList, btnLeave
+      cPane.getChildren().addAll(taChat,timer,tfWord,btnNext,  imageView, fpChatSend,tfChatInput, btnLeave, btnSend, taList);
+      
+      //More Layout for GUI components
+      timer.setStyle("-fx-accent: #BA1009; -fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");   
       timer.setPrefHeight(40);
       timer.setPrefWidth(310);
       timer.setLayoutY(450);
@@ -275,26 +261,6 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       taList.setLayoutY(50);
       taList.setPrefWidth(140);
       taList.setPrefHeight(200);
-      tfT1Points.setPrefWidth(140);
-      tfT1Points.setPrefHeight(50);
-      tfT2Points.setPrefWidth(140);
-      tfT2Points.setPrefHeight(50);
-      tfT1Points.setLayoutX(460);
-      tfT1Points.setLayoutY(270);
-      tfT2Points.setLayoutX(460);
-      tfT2Points.setLayoutY(334);
-      tfT1Points.setEditable(false);
-      tfT2Points.setEditable(false);
-      
-      try{
-         Image image1 = new Image(new FileInputStream("Rectangle 15.png"));
-
-      }catch(Exception e){
-      
-         e.getMessage();
-      
-      }
-      
       taChat.setLayoutX(35);
       taChat.setLayoutY(50);
       tfWord.setLayoutX(35);
@@ -307,24 +273,18 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       taChat.setStyle("-fx-border-radius: 15px;");
       taChat.setPrefWidth(400);
       taChat.setPrefHeight(200);
-      tfChatInput.setPrefWidth(400);
-      tfWord.setEditable(false);
-      taList.setEditable(false);
-      taChat.setEditable(false);
-      btnLeave.setOnAction(this);
-      btnNext.setOnAction(this);
-      btnSend.setOnAction(this);
-      btnSend.setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent k) {
-            if (k.getCode().equals(KeyCode.ENTER)) {
-                doSend();
-            }
-        }
-});
-      btnPlay.setOnAction(this);  
+      tfChatInput.setPrefWidth(400);            
+      try{
+         Image image1 = new Image(new FileInputStream("Rectangle 15.png"));
+      
+      }catch(Exception e){
+      
+         e.getMessage();
+      
+      }      
    }
    
+   //Event Handler for Buttons
    public void handle(ActionEvent evt) {
       // Get the button that was clicked
       Button btn = (Button)evt.getSource();
@@ -334,10 +294,12 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          case "Play":
             doConnect();
             stage.setScene(sceneGame);
+            
             break;
+            
          case "How to Play":
-             //stage.setScene(sceneHTP);
-            System.out.println("How To Play screen starts");  
+            System.out.println("How To Play screen starts"); 
+             
             break;
             
          case "Leave":
@@ -347,21 +309,23 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
             
          case "Send":
             doSend();
+            
             break;
             
          case "Next":
             tfWord.setText(getPrompt());
-            break;
             
-                     
+            break;                     
       }
    }
 
-//Sending   
+   //Method to connect to the Server
    public void doConnect(){
    
       String ip = null;
       String name = null;
+      
+      //Get inputs from the TextInputDialogs
       
       Optional<String> result = tidIP.showAndWait();
       ip = tidIP.getEditor().getText();
@@ -377,7 +341,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          //Start the thread
          new ReceiveMsgThread().start();
          
-         //Semd the command to join
+         //Send the command to join
          oos.writeUTF("JOIN");
          oos.flush();
          oos.writeUTF(name);
@@ -386,23 +350,26 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       }catch(Exception e){
          System.out.println("Problem joining: "+ e.getMessage());
          taChat.setText("Error Joining: Leave this Lobby and try rejoining with correct ip");
-      }
-           
+      }           
    }
-
+   
+   //Method to send the User input to the server then to the rest of the clients
    private void doSend() {
-      try {
+   
+      try {      
          String chat = tfChatInput.getText();
          oos.writeUTF("SEND");
          oos.flush();
          oos.writeUTF(chat);
          oos.flush();
          tfChatInput.setText("");
-      } catch (Exception ex) {
+         
+      }catch (Exception ex) {
          ex.printStackTrace();
       }
    }
    
+   //Method to leave and disconnect from the Server
    private void doLeave(){
       try{
          taChat.setText("");
@@ -411,57 +378,58 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          oos.flush();     
          socket.close();
          stage.setScene(sceneStart);
+         
       }catch(Exception e){System.out.println(e.getMessage());}
    }
    
+   //Method to refresh the Chat box to load any new messages
    private void refreshMsg(Variables var) {
+   
       //Loop through the variables to update the list
       Vector<String> playerList = var.playerlistGet();
       localList = playerList;
       taChat.setText("");
+      
       for(int i = 0;i< playerList.size();i++){
          System.out.println("Adding ==> " + playerList.get(i));
          taChat.appendText(playerList.get(i)+"\n");
       }
    }
+   
+   //Method to refresh teh player list
    private void refreshList(Variables var) {
+   
       //Loop through the variables to update the list
       Vector<String> playerList = var.playerlistGet();
       localList = playerList;
       taList.setText("");
+      
       for(int i = 0;i< playerList.size();i++){
          System.out.println("Adding ==> " + playerList.get(i));
-         if(onTeam1){
-            taList.appendText("Team 1: "+playerList.get(i)+"\n");
-         }else if(onTeam2){
-            taList.appendText("Team 2: "+playerList.get(i)+"\n");
-         }else{
-            taList.appendText(playerList.get(i)+"\n");
-         }
+         taList.appendText(playerList.get(i)+"\n");
       }
-   }
+   }   
    
-   
+   //class to receieve new messages from the server
    class ReceiveMsgThread extends Thread {
+   
       public void run() {
+      
          System.out.println("Client Thread Running");
-         
-
-        timer.progressProperty().bind(seconds.divide(60.0));
-        Timeline timeline = new Timeline(
+         timer.progressProperty().bind(seconds.divide(60.0));
+         Timeline timeline = new Timeline(
             new KeyFrame(Duration.ZERO, new KeyValue(seconds, 0)),
-            new KeyFrame(Duration.minutes(1), e-> {
+            new KeyFrame(Duration.minutes(1), 
+            e-> {
                 // do anything you need here on completion...
-                System.out.println("Minute over");
+               System.out.println("Minute over");
             }, new KeyValue(seconds, 60))   
-        );
-        
-
-
-         
+            );
+      
          String message = "";
-         try {
-
+         
+         try {   
+              
             //Loop to keep listening
             while(true) {
                String command = ooi.readUTF();
@@ -475,12 +443,6 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      Variables var = (Variables)ooi.readObject();
                      System.out.println("received data of size " + var.playerlistGet().size());
                      refreshList(var);
-                  //                         Platform.runLater(
-                  //                            new Runnable() {
-                  //                               public void run() {
-                  //                                  refreshList(var);
-                  //                               }
-                  //                            });
                      break;
                       
                   case "REFRESHMSG":                    
@@ -491,10 +453,10 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      break;
                      
                   case "STARTTIMER":
-                        timeline.setCycleCount(Animation.INDEFINITE);
-                        timeline.play();
-                        break;
-
+                     timeline.setCycleCount(Animation.INDEFINITE);
+                     timeline.play();
+                     break;
+               
                                         
                   case "MOVIES":
                      System.out.println("Hello World");
@@ -506,31 +468,31 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      String currentWord = getPrompt();
                      tfWord.setText(currentWord);
                      pack.setCurrentWord(currentWord);
-
+                  
                      break;
                      
                   case "RESETWORD":
                      tfWord.setText("");
+                     
                      break;
-                         
-   
+                                        
                   default:
                      System.out.println("Invalid command: " + command);
                }
             }
-         } catch(Exception ex) {
+         }catch(Exception ex) {
             ex.printStackTrace();
          }
       }
    }  
    
-   
- 
- public String getPrompt(){
-   Collections.shuffle(promptSet);
-   return promptSet.get(0);
- }
+   //Method to get the prompt based on the choice in the Category
+   public String getPrompt(){
+      Collections.shuffle(promptSet);
+      return promptSet.get(0);
+   }
 }
+
 
  
    
