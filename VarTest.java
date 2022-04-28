@@ -12,6 +12,13 @@ public class VarTest{
       System.out.println(pack.playerlistGet());
       pack.playerlistRemove("Neb");
       System.out.println(pack.playerlistGet());
+      
+      
+      pack.setCurrentWord("Test");
+      System.out.println(pack.getCurrentWord());
+      
+      
+      
    
    }
 

@@ -406,6 +406,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private void doLeave(){
       try{
          taChat.setText("");
+         tfWord.setText("");
          oos.writeUTF("DISCONNECT");
          oos.flush();     
          socket.close();
@@ -504,9 +505,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                   case "YOURTURN":
                      String currentWord = getPrompt();
                      tfWord.setText(currentWord);
-                     System.out.println("" + promptSet.size());
-                     oos.writeUTF(currentWord);
-                     oos.flush();
+                     pack.setCurrentWord(currentWord);
+
                      break;
                      
                   case "RESETWORD":
@@ -528,8 +528,6 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
  
  public String getPrompt(){
    Collections.shuffle(promptSet);
-   pack.setCurrentWord(promptSet.get(0));
-   System.out.println(pack.currentWord + "");
    return promptSet.get(0);
  }
 }

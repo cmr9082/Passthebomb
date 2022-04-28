@@ -330,66 +330,23 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          for(int i = 0; i < clients.size();i++){
          
             //Iterate the promptSet and send to isolated client
-         
-         
-         
-         
-         
-         
             ObjectOutputStream turnPlayer = clients.get(i);
             turnPlayer.writeUTF("YOURTURN");
             turnPlayer.flush();
          
-            ServerSocket ss = new ServerSocket(45549);
-            Socket socket = ss.accept();
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+         
+         
+         
          
             String currentWord = getCurrentWord();
-            System.out.println(currentWord+"");
-            while(verify){
-               
-               if(input.equals(currentWord)){
-               
-                  verify = false;
-                  try{
-                     for(ObjectOutputStream clientOutStream : clients) {
-                     
-                        clientOutStream.writeUTF("RESETWORD");
-                        clientOutStream.reset();
-                        clientOutStream.flush();
-                     
-                     }
-                        
-                     
-                  }catch(Exception e){
-                  
-                  
-                  }
-               
-               
-               
-               }else{
-           
-                  verify = true;                 
-               }
-               
-            }           
-         //  
-         //             
-         //             while(true) {
-         //                // String command = scn.nextLine();
-         //                String command = ooi.readUTF();
-         //                switch(command) {
-         //                
-         //                   case "SEND":
-         //                      String guess1 = ooi.readUTF();
-         //                   
-         //                      break;
-         //                
-         //                }
-         //               
-         //             
-         //             }
+            
+            System.out.println("Word: " + currentWord);
+            System.out.println("Guess: "+guess);
+            
+            answerListener(input,currentWord);
+            
+            
+
          }
       }catch(Exception e){}
             //Listen for correct answer
@@ -405,7 +362,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    public void doValidate(String _command){
    
       input = _command;
-      System.out.println(input);  
+        
    
       try{
          ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
@@ -430,13 +387,33 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    String currentWord = pack.getCurrentWord();
       return currentWord;
    }
-   
+   public void answerListener(String _input, String _currentWord){
+            String input = _input;
+            String currentWord = _currentWord;
+            while(verify){
+               
+               if(input.equals(currentWord)){
+                  verify = false;
+                  try{
+                     for(ObjectOutputStream clientOutStream : clients) { 
+                        clientOutStream.writeUTF("RESETWORD");
+                        clientOutStream.reset();
+                        clientOutStream.flush();
+                     }
+                  }catch(Exception e){}
+               }else{
+           
+                  verify = true;                 
+               }
+               
+            }  
+
+} 
    
 }
 
       
-      
-      
+ 
       
       
       
