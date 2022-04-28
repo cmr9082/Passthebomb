@@ -83,8 +83,11 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    private FlowPane fpChatSend = new FlowPane(5,5);
    private FlowPane fpNext = new FlowPane(5,5);
    
+   private ProgressBar timer = new ProgressBar();
+   private IntegerProperty seconds = new SimpleIntegerProperty();
+   
 
-   private TextField tfWord = new TextField();
+   private TextField tfWord = new TextField("Your Prompt Word...");
    private Button btnNext = new Button("Next");
    private TextArea taChat = new TextArea();
    private TextField tfChatInput = new TextField();
@@ -123,31 +126,6 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       Image image  = new Image(stream);
       
       ImageView imageView = new ImageView(image);
-      
-      ProgressBar timer = new ProgressBar();
-        IntegerProperty seconds = new SimpleIntegerProperty();
-        timer.progressProperty().bind(seconds.divide(60.0));
-        Timeline timeline = new Timeline(
-            new KeyFrame(Duration.ZERO, new KeyValue(seconds, 0)),
-            new KeyFrame(Duration.minutes(1), e-> {
-                // do anything you need here on completion...
-                System.out.println("Minute over");
-            }, new KeyValue(seconds, 60))   
-        );
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
-        
-
-       
-   
-        
-
-    
-     
-      
-     
-      
-      
       sceneGame = new Scene(rootGame, 700, 600); 
                               
       stage.setScene(sceneStart);                 
@@ -176,7 +154,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       btnPlay.setStyle("-fx-background-color: #BC1002; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 0px;");
       btnLeave.setStyle("-fx-background-color: #ECC402; -fx-text-fill: #ffffff;  -fx-border-radius: 15px; -fx-padding: 15px;");
       btnSend.setStyle("-fx-background-color: #ECC402; -fx-text-fill: #ffffff; -fx-width: 400;  -fx-border-radius: 15px; -fx-padding: 15px;");
-   
+      btnNext.setStyle("-fx-background-color: #ECC402; -fx-text-fill: #ffffff; -fx-width: 100;  -fx-border-radius: 15px; -fx-padding: 5px;");
+
    
       lblTitle.setFont(Font.font ("Jockey One", 50));
       lblIP.setFont(Font.font ("Jockey One", 50));
@@ -276,9 +255,9 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
       cPane.relocate(100, 100);
    
-      fpNext.getChildren().add(btnNext);
+    
      
-      cPane.getChildren().addAll(taChat,timer,  imageView, fpChatSend,tfChatInput, btnLeave, btnSend, taList, tfT1Points, tfT2Points);
+      cPane.getChildren().addAll(taChat,timer,tfWord,btnNext,  imageView, fpChatSend,tfChatInput, btnLeave, btnSend, taList, tfT1Points, tfT2Points);
       timer.setStyle("-fx-accent: #BA1009; -fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
       // timer,tfWord,fpNext,taChat,fpChatSend, taList, btnLeave
       timer.setPrefHeight(40);
@@ -309,9 +288,6 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       try{
          Image image1 = new Image(new FileInputStream("Rectangle 15.png"));
 
-      
-      
-      
       }catch(Exception e){
       
          e.getMessage();
@@ -320,6 +296,10 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       
       taChat.setLayoutX(35);
       taChat.setLayoutY(50);
+      tfWord.setLayoutX(35);
+      tfWord.setLayoutY(12);
+      btnNext.setLayoutX(200);
+      btnNext.setLayoutY(12);
       tfChatInput.setLayoutX(35);
       tfChatInput.setLayoutY(270);
       tfChatInput.setPromptText("Type your guess...");
@@ -331,7 +311,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       taList.setEditable(false);
       taChat.setEditable(false);
       btnLeave.setOnAction(this);
-      btnNext.setOnAction(this);
+      // btnNext.setOnAction(this);
+      btnSend.setOnAction(this);
       btnSend.setOnKeyPressed(new EventHandler<KeyEvent>() {
         @Override
         public void handle(KeyEvent k) {
@@ -462,8 +443,23 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
       public void run() {
          System.out.println("Client Thread Running");
          
+
+        timer.progressProperty().bind(seconds.divide(60.0));
+        Timeline timeline = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(seconds, 0)),
+            new KeyFrame(Duration.minutes(1), e-> {
+                // do anything you need here on completion...
+                System.out.println("Minute over");
+            }, new KeyValue(seconds, 60))   
+        );
+        
+
+
+         
          String message = "";
          try {
+         
+         
             //Loop to keep listening
             while(true) {
                String command = ooi.readUTF();
@@ -492,14 +488,11 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      refreshMsg(var2);
                      break;
                      
-                     
-                     
-                     
-                     
-                     
-                     
-                     
-                     
+                  case "STARTTIMER":
+                        timeline.setCycleCount(Animation.INDEFINITE);
+                        timeline.play();
+                        break;
+
                   case "TEAM1SET":
                      onTeam1 = true;
                      break;

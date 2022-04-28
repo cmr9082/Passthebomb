@@ -18,16 +18,19 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    private VBox root = new VBox();
    private FlowPane fp1 = new FlowPane(10,10);
    private Object lock = new Object();
+   private Socket socket2 = null;
+   
    
    // GUI Components
    private Label lblServer = new Label("Server IP:");
    private TextField tfServer = new TextField();
    private TextArea taLog = new TextArea();
-   private Button btnStart = new Button("Start Game");
+   private Button btnStart = new Button("Start");
    private ComboBox cbCategory = new ComboBox();
    private RadioButton btnAuto = new RadioButton("Auto Start");
    private Pane pLog = new Pane();
    private Pane pButtons = new Pane();
+   private Socket clientSocket = null;
    
    Vector<ObjectOutputStream> clients = new Vector<ObjectOutputStream>();
    Vector<ObjectOutputStream> team1 = new Vector<ObjectOutputStream>();
@@ -101,13 +104,15 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       lblServer.setLayoutY(305);
       tfServer.setLayoutX(300);
       tfServer.setLayoutY(330);
-      
+      btnStart.setOnAction(this);
       //Move the buttons and other server features to the side of the textArea
       
      
    
       cbCategory.getSelectionModel().selectFirst();
-      btnStart.setOnAction(this);
+     //  ObjectOutputStream oos = new ObjectOutputStream(socket1.getOutputStream());
+   
+     
       try{tfServer.appendText(InetAddress.getLocalHost().getHostAddress().trim());}
       catch(Exception e){taLog.appendText("Error Getting Local IP: "+e.getMessage()+"\n");}
    
@@ -120,11 +125,21 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       t1.start();
             
    }
-      
-
-   public void handle(ActionEvent evt) {gameStart();}
-
    
+   public void handle(ActionEvent evt) {
+    
+      Button btn = (Button)evt.getSource();
+      
+      // Switch on its name
+      switch(btn.getText()) {
+         case "Start":
+          System.out.println("Hello World");
+          gameStart();
+          break;
+    
+      }
+    }
+
    private void doServerStuff() {
       try {
          ServerSocket sSocket = new ServerSocket(45549);
@@ -132,6 +147,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             Socket socket1 = sSocket.accept();
             Thread t2 = new ClientThread(socket1);
             t2.start();
+            
          }
       }
       catch(Exception e) {
@@ -192,7 +208,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          }
       }
    }
-            
+   
+         
    class ClientThread extends Thread {
       Socket socket2 = null;
       Scanner scn = null;
@@ -212,6 +229,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             oos = new ObjectOutputStream(socket2.getOutputStream());
             clients.add(oos);
             taLog.appendText("Request received from " + socket2.getInetAddress().getHostName()+"\n");
+            
+            
          
             while(true) {
                // String command = scn.nextLine();
@@ -244,6 +263,9 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
                      taLog.appendText("ERROR: Unrecognized Command Recieved");
                      break;
                }  // switch 
+               
+              
+
             }  //while
             
             // pw.close();
@@ -260,7 +282,28 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
    public void gameStart(){
    //Setup
     //Get and set Array Category
+    
+    try{
+     ServerSocket s1 = new ServerSocket();  
+    clientSocket = s1.accept();
+    
+    ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());  
+    
+     oos.writeUTF("STARTTIMER");
+                     oos.flush();
+
+    }catch(Exception e){
+      e.getMessage();
+    
+    }
+    
+   
+    
+    
+    
+    
       taLog.appendText("Game Started!\n");
+      
    
       switch(cbCategory.getValue().toString()){
          case "Everyday Object":
@@ -317,9 +360,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       try{
       turnPlayer.writeUTF("YOUR-TURN");
       turnPlayer.flush();
-      
-      
-      
+
       }catch(Exception e){}
       //stop the other team from talking
       //Listen for correct answer
