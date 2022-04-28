@@ -300,7 +300,8 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             promptSet = prompts.getVideoGames();
             break;
          case "Movies":
-            // // broadcastMessage("MOVIES", pack);            
+            promptSet = prompts.getMovies();
+                 //  broadcastMessage("MOVIES", pack);            
             try{
                for(ObjectOutputStream clientOutStream : clients) {               
                   clientOutStream.writeObject("MOVIES");
@@ -321,17 +322,21 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
          for(int i = 0; i < pack.getSize(); i++){
 
             //Iterate the promptSet and send to isolated client
-                       
+            System.out.println("It got in");
             ObjectOutputStream turnPlayer = clients.get(i);
+             
             turnPlayer.writeObject("YOURTURN");
             turnPlayer.reset();
             turnPlayer.flush();
             
             
-            ObjectInputStream turnPlayer2 = client.get(i);
-
-            String currentWord = turnPlayer2.readObject().toString();
+            String currentWord = getPrompt();
             System.out.println(currentWord);
+            System.out.println("After");
+            turnPlayer.writeObject(currentWord);
+            turnPlayer.flush();
+
+
             
             String input = packMsg.getPlayerInput();
             
@@ -380,7 +385,10 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
       // }
       //send points
    }
-   
+   public String getPrompt(){
+      Collections.shuffle(promptSet);
+      return promptSet.get(0);
+   }
    //Method for Validating the User input
    public void doValidate(String _command){   
       input = _command;
