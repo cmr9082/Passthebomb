@@ -448,6 +448,13 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
             e-> {
                 // do anything you need here on completion...
                System.out.println("Minute over");
+               // try{
+//                   oos.writeObject("STOPTIMER");
+//                   oos.flush();
+//                }catch(Exception easdas){
+//                
+//                }
+               
             }, new KeyValue(seconds, 60))   
             );
       
@@ -463,6 +470,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                   //it is a command
                System.out.println("Command received : " + command);
                switch(command) {
+               
                   case "REFRESHLIST":
                         //command to refresh the list
                         //Server is sending var object. readit.
@@ -470,6 +478,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      Variables var = (Variables)ooi.readObject();
                      System.out.println("received data of size " + var.playerListGet().size());
                      refreshList(var);
+                     
                      break;
                       
                   case "REFRESHMSG":                    
@@ -479,32 +488,31 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      refreshMsg(var2);
                      break;
                      
-                     
                   case "STARTTIMER":
                      timeline.setCycleCount(Animation.INDEFINITE);
                      timeline.play();
-                     break;
-               
+            
                                         
                   case "MOVIES":
-                     System.out.println("Hello World");
+                     System.out.println("Movie here ");
                      // Variables var2 = (Variables)ooi.readObject();
                      promptSet = prompts.getMovies();
+                 break;
                      
-                     break;
+                     
                   case "YOURTURN":
-                     String currentWord = getPrompt();
-                     tfWord.setText(currentWord);
-                     pack.setCurrentWord(currentWord);
-                     System.out.println(currentWord);
-                     oos.writeUTF(currentWord);
-                     oos.flush();
+                  System.out.println("It go into YOur turn");
+                  String currentWord = ooi.readObject().toString();
+                  tfWord.setText(currentWord);
+                  pack.setCurrentWord(currentWord);
+//                      System.out.println("Your turn here");
                      break;
+               
                      
                   case "RESETWORD":
                      tfWord.setText("");
-                     
                      break;
+                     
                                         
                   default:
                      System.out.println("Invalid command: " + command);
@@ -517,7 +525,10 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    }  
    
    //Method to get the prompt based on the choice in the Category
-   
+   public String getPrompt(){
+      Collections.shuffle(promptSet);
+      return promptSet.get(0);
+   }
 }
 
 
@@ -527,3 +538,4 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    
 
    
+ 
