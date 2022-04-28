@@ -316,6 +316,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             ObjectOutputStream turnPlayer = clients.get(i);
        
             turnPlayer.writeUTF("YOURTURN");
+            turnPlayer.reset();
             turnPlayer.flush();
                         
             ObjectInputStream turnPlayer2 = client.get(i);
@@ -323,7 +324,7 @@ public class GProjectServer extends Application implements EventHandler<ActionEv
             String input = packMsg.getPlayerInput();
             String currentWord = turnPlayer2.readUTF();
             answerListener(input,currentWord);
-            turnPlayer2.close(); 
+            
       }
     
       
