@@ -438,6 +438,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    //class to receieve new messages from the server
    class ReceiveMsgThread extends Thread {
    
+  
+   
       public void run() {
       
          System.out.println("Client Thread Running");
@@ -454,6 +456,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
          String message = "";
          
          try {   
+          ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+
               
             //Loop to keep listening
             while(true) {
