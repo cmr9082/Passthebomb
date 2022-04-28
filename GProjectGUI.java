@@ -496,7 +496,8 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
                      String currentWord = getPrompt();
                      tfWord.setText(currentWord);
                      pack.setCurrentWord(currentWord);
-                     oos.writeObject(currentWord);
+                     System.out.println(currentWord);
+                     oos.writeUTF(currentWord);
                      oos.flush();
                      break;
                      
@@ -516,10 +517,7 @@ public class GProjectGUI extends Application implements EventHandler<ActionEvent
    }  
    
    //Method to get the prompt based on the choice in the Category
-   public String getPrompt(){
-      Collections.shuffle(promptSet);
-      return promptSet.get(0);
-   }
+   
 }
 
 
